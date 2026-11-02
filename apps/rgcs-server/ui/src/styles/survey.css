@@ -1,0 +1,47 @@
+/* Survey panel (right side): reuses the Glass .form / .seg / .hint / .btn; only layout tweaks here. */
+.survey-panel .sv-form { margin-top: 12px; }
+.survey-panel .sv-field { gap: 8px; min-width: 0; }
+.survey-panel .sv-field .in { flex: 1; min-width: 0; }
+.survey-panel .sv-field .in:disabled { opacity: 0.6; }
+.survey-panel .sv-slider { flex: 2; min-width: 0; accent-color: var(--accent); }
+.survey-panel .sv-note { font-size: 11px; white-space: nowrap; }
+.survey-panel .sv-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.survey-panel .sv-sub { margin: 16px 0 8px; }
+.survey-panel .sv-numbers .summary-grid + .summary-grid,
+.survey-panel .sv-numbers .summary-grid + .sv-note { margin-top: 10px; }
+.survey-panel .sv-worst { font-weight: 600; }
+.survey-panel .sv-worst.low { color: var(--caution); }
+.survey-panel .sv-warns { display: grid; gap: 6px; margin-top: 12px; }
+.survey-panel .sv-warn { display: block; text-align: left; border-radius: 10px; pointer-events: auto; line-height: 1.5; }
+.survey-panel .sv-expand { width: 100%; margin-top: 14px; }
+.survey-panel input[aria-invalid] { border-color: var(--caution-line); }
+
+/* Drawing / KML notes over the mission list (Glass .hint, made clickable and boxy). */
+.mission-left .sv-draw { margin: 8px 12px 0; border-radius: 12px; text-align: left; pointer-events: auto; line-height: 1.5; }
+.mission-left .sv-kml-choose { padding: 10px 12px; border: 1px solid var(--line-hi); background: var(--glass); }
+.mission-left .sv-kml-list { display: grid; gap: 6px; margin-top: 8px; }
+.mission-left .sv-kml-item { width: 100%; justify-content: space-between; gap: 8px; }
+
+/* Palette entries that are not commands. */
+.cmd-palette .sv-pal { gap: 8px; color: var(--accent); }
+
+/* A survey in the mission list: one group row; its items read-only and dimmed. */
+.sv-group .sv-head { cursor: pointer; }
+.sv-group .sv-badge { border-radius: 6px; color: var(--accent); border-color: var(--accent); }
+.sv-group .sv-badge.sel { color: inherit; }
+.sv-group .sv-head-text { font-weight: 500; }
+.sv-group .sv-toggle svg { transition: transform 0.15s ease; }
+.sv-group .sv-toggle.open svg { transform: rotate(90deg); }
+.sv-group .wrow.sv-child { opacity: 0.6; margin-left: 22px; cursor: default; }
+.sv-group .wrow.sv-child.sel { opacity: 0.9; }
+
+/* The first vertex of the area being drawn: click to close the ring. */
+.sv-draw-close { width: 14px; height: 14px; border-radius: 50%; background: var(--caution); border: 2px solid var(--on-accent); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); cursor: pointer; }
+
+/* Surveys on the map: polygon vertex and rotate handles, and the footprint button. */
+.sv-vtx { width: 12px; height: 12px; border-radius: 3px; background: var(--caution); border: 2px solid var(--on-accent); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); cursor: grab; }
+.sv-vtx.sv-draw-close { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; }
+.maplibregl-marker:has(.sv-vtx), .maplibregl-marker:has(.sv-rot) { z-index: 4; }
+.sv-rot { width: 16px; height: 16px; border-radius: 50%; background: var(--on-accent); border: 2px solid var(--caution); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); cursor: grab; }
+.sv-foot-btn { width: 40px; height: 40px; z-index: 3; border: 1px solid var(--line); }
+.survey-panel .sv-detail { font-size: 11px; margin-top: 2px; word-break: break-word; }

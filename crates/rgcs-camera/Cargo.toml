@@ -1,0 +1,27 @@
+[package]
+name = "rgcs-camera"
+description = "Camera / gimbal drivers for RGCS: SIYI MT11 protocol and client, Camera trait, simulator"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[features]
+sim = []
+
+[dependencies]
+rgcs-core = { workspace = true }
+rgcs-mavlink = { workspace = true }
+mavlink = { workspace = true }
+tokio = { workspace = true, features = ["io-util"] }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+async-trait = "0.1"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
+
+[[example]]
+name = "siyi_sim"
+required-features = ["sim"]

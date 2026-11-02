@@ -1,0 +1,38 @@
+# Docker "Pi equivalent" for deployment testing (scripts/pi-sim.sh drives it).
+# pi: Debian bookworm arm64 + systemd. mediamtx / video share its network namespace, so
+# everything is on 127.0.0.1 exactly as on the real Pi. The FC link comes from the host SITL.
+name: rgcs-pi
+services:
+  pi:
+    build: { context: ., dockerfile: pi.Dockerfile }
+    image: rgcs-pi:bookworm
+    platform: linux/arm64
+    hostname: rgcs-pi
+    privileged: true
+    cgroup: host
+    tmpfs: [/run, /run/lock]
+    stop_signal: SIGRTMIN+3
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      - ../../dist/pi:/mnt/dist:ro
+      - ../..:/mnt/deploy:ro
+    ports:
+      # Loopback only: the dev Mac must not expose admin/admin to its LAN.
+      - "127.0.0.1:18000:8000"
+      - "127.0.0.1:8189:8189/udp"
+      - "127.0.0.1:8189:8189/tcp"
+  mediamtx:
+    image: bluenviron/mediamtx:1.9.3
+    platform: linux/arm64
+    network_mode: service:pi
+    depends_on: [pi]
+    restart: unless-stopped
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
+  video:
+    build: { context: ., dockerfile: video.Dockerfile }
+    image: rgcs-pi-video:bookworm
+    platform: linux/arm64
+    network_mode: service:pi
+    depends_on: [mediamtx]
+    restart: unless-stopped

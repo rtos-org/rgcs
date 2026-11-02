@@ -1,0 +1,69 @@
+[package]
+name = "rgcs-server"
+description = "RGCS backend: MAVLink + camera + video relay + web UI on the companion Pi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "rgcs-server"
+path = "src/main.rs"
+
+[dependencies]
+include_dir = "0.7"
+mime_guess = "2"
+http-body-util = { workspace = true }
+rgcs-core = { workspace = true }
+rgcs-mavlink = { workspace = true }
+rgcs-store = { workspace = true }
+rgcs-camera = { workspace = true }
+rgcs-video = { workspace = true }
+rgcs-input = { workspace = true }
+rgcs-mission = { workspace = true }
+rgcs-ai = { workspace = true }
+rgcs-guard = { workspace = true }
+rgcs-env = { workspace = true }
+reqwest = { workspace = true, features = ["json", "rustls-tls"] }
+thiserror = { workspace = true }
+async-trait = "0.1"
+mavlink = { workspace = true }
+axum-extra = { workspace = true }
+uuid = { workspace = true }
+axum = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+ts-rs = { workspace = true }
+serde_json = { workspace = true }
+toml = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+futures = { workspace = true }
+httpdate = "1"
+tokio-util = { workspace = true }
+printpdf = { workspace = true }
+csv = { workspace = true }
+time = { workspace = true }
+url = { workspace = true }
+
+[features]
+# Compile apps/rgcs-server/ui/dist into the binary (run `npm run build` first).
+embed-ui = []
+# Test builds get the MT11 simulator through the self dev-dependency below.
+sim = ["rgcs-camera/sim"]
+
+[dev-dependencies]
+rgcs-ai = { workspace = true, features = ["fake"] }
+regex = "1"
+uuid = { workspace = true }
+rgcs-server = { path = ".", features = ["sim"] }
+mavlink = { workspace = true }
+tokio = { workspace = true, features = ["test-util"] }
+tower = { workspace = true, features = ["util"] }
+http-body-util = { workspace = true }
+tokio-tungstenite = "0.29"

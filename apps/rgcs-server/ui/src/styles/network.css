@@ -1,0 +1,17 @@
+/* Network view additions. Placeholders for elements a standalone server does not
+   have (Hub, LTE, mesh GW, uplink, NTRIP, remote users) are drawn dashed and dim. These selectors
+   only add to the prototype classes; prototype.css is never edited. */
+.nn.ph .card { stroke-dasharray: 4 4; fill: rgba(255, 255, 255, .02) }
+.nn.ph, .npl.ph, .ne.ph { opacity: .45 }
+.ne.ph .flow { display: none }
+.ne.ph .base { stroke-dasharray: 3 5 }
+
+/* Inspector kv values coloured like the prototype's .ntable cells. */
+.stage.net .kv > span.warn { color: var(--caution) }
+.stage.net .kv > span.ok { color: var(--ok) }
+.stage.net .kv > span.dim { color: var(--text-3) }
+/* The client table has four columns in the 340 px panel: slightly tighter cells than the prototype's. */
+.stage.net .ntable > span { padding-left: 6px; padding-right: 6px }
+/* labels keep one line (映像サーバー, ユーザー): a 6em minimum label column */
+.stage.net .kv { grid-template-columns: minmax(6em, auto) 1fr; }
+.stage.net .kv > span:nth-child(odd), .stage.net th { white-space: nowrap; }

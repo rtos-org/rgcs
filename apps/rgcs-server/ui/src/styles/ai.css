@@ -1,0 +1,56 @@
+/* AI chat right panel: the layout the prototype inlines (lines 655–689). */
+.ai .panel-h .ai-target-l { font-size: 12px; margin-left: 6px; }
+.ai .panel-h .ai-target { height: 34px; min-width: 110px; }
+.ai-provider { font-size: 11px; padding: 0 18px 6px; margin-top: -6px; }
+.ai-notice { margin: 4px 14px 8px; padding: 10px 12px; font-size: 13px; }
+.ai-notice .t3 { font-size: 12px; margin-top: 4px; }
+
+.ai-list { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+.ai-row { display: flex; gap: 10px; align-items: flex-end; }
+.ai-row.user { justify-content: flex-end; }
+.ai-row.user .bubble { max-width: 78%; }
+.ai-row.bot .bubble { max-width: 80%; }
+.ai-row .bubble { white-space: pre-wrap; overflow-wrap: anywhere; }
+.ai-time { font-size: 11px; flex: none; }
+.ai-avatar { width: 30px; height: 30px; flex: none; border-radius: 50%; background: var(--accent-tint); display: grid; place-items: center; color: var(--accent); }
+.bubble.bot.ai-err { color: var(--danger); background: var(--danger-tint); border-color: var(--danger-line); }
+.ai-note { font-size: 12px; margin-top: 6px; }
+.ai-thinking { color: var(--text-2); }
+.ai-spin { animation: ai-spin 1s linear infinite; }
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ai-spin { animation: none; } }
+
+.ai-tool { margin-left: 40px; padding: 10px 12px; font-size: 13px; }
+.ai-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
+.ai-tool-h { font-size: 11px; margin: 0 0 4px; }
+.ai-run + .ai-run { margin-top: 6px; }
+.ai-run-ic { display: grid; }
+.ai-run-ic.ok { color: var(--ok); }
+.ai-run-ic.bad { color: var(--danger); }
+.ai-run-time { margin-left: auto; }
+.ai-run-target { font-size: 11px; margin: 4px 0 0 24px; }
+
+.ai-proposal { margin-left: 40px; padding: 10px 12px; font-size: 13px; border-left: 3px solid var(--accent); display: flex; flex-direction: column; gap: 4px; }
+.ai-proposal-h { gap: 6px; color: var(--accent); font-size: 12px; font-weight: 500; }
+.ai-proposal-cmd { font-size: 15px; font-weight: 600; }
+.ai-proposal-meta { font-size: 12px; }
+.ai-proposal-reason { line-height: 1.5; overflow-wrap: anywhere; }
+.ai-proposal-err { color: var(--danger); font-size: 12px; }
+.ai-proposal-state { font-size: 12px; margin-top: 2px; }
+.ai-proposal-actions { justify-content: flex-end; margin-top: 6px; }
+.ai-proposal-actions .btn { height: 36px; min-width: 76px; }
+
+.ai-compose { gap: 8px; padding: 12px; }
+.ai-compose .in { font-size: 14px; min-width: 0; }
+.ai-send { width: 52px; padding: 0; flex: none; display: grid; place-items: center; }
+
+.confirm-ai { gap: 6px; font-size: 12px; margin-top: 6px; color: var(--accent); }
+.confirm-ai span { color: var(--text-3); overflow-wrap: anywhere; }
+
+/* AI 緊急介入 alert as a local chat item. */
+.ai-guard { margin-left: 40px; padding: 10px 12px; font-size: 13px; border-left: 3px solid var(--danger); display: flex; flex-direction: column; gap: 4px; }
+.ai-guard-h { gap: 6px; color: var(--danger); font-size: 12px; font-weight: 500; }
+.ai-guard.taken_over, .ai-guard.cleared { border-left-color: var(--line-soft); }
+.ai-guard.taken_over .ai-guard-h, .ai-guard.cleared .ai-guard-h { color: var(--text-2); }
+.ai-guard-text { line-height: 1.5; overflow-wrap: anywhere; }
+.ai-guard-note { font-size: 11px; }

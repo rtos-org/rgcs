@@ -1,0 +1,20 @@
+# MediaMTX as on the Pi: RTSP in (MT11 / test pattern), WebRTC (WHEP) out, all on loopback.
+# webrtcAdditionalHosts lets the browser on the Docker host reach the published 8189 ports.
+logLevel: info
+rtsp: yes
+rtspAddress: 127.0.0.1:8554
+rtmp: no
+hls: no
+srt: no
+api: no
+metrics: no
+pprof: no
+playback: no
+webrtc: yes
+webrtcAddress: 127.0.0.1:8889
+webrtcLocalUDPAddress: :8189
+webrtcLocalTCPAddress: :8189
+webrtcIPsFromInterfaces: yes
+webrtcAdditionalHosts: [127.0.0.1]
+paths:
+  all_others:

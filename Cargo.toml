@@ -1,0 +1,61 @@
+[workspace]
+resolver = "2"
+members = ["crates/rgcs-core", "crates/rgcs-mavlink", "crates/rgcs-store", "crates/rgcs-camera", "crates/rgcs-video", "crates/rgcs-input", "crates/rgcs-mission", "crates/rgcs-ai", "crates/rgcs-guard", "crates/rgcs-env", "apps/rgcs-server"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+rust-version = "1.85"
+
+[workspace.dependencies]
+rgcs-core = { path = "crates/rgcs-core" }
+rgcs-mavlink = { path = "crates/rgcs-mavlink" }
+rgcs-store = { path = "crates/rgcs-store" }
+rgcs-camera = { path = "crates/rgcs-camera" }
+rgcs-video = { path = "crates/rgcs-video" }
+rgcs-input = { path = "crates/rgcs-input" }
+rgcs-mission = { path = "crates/rgcs-mission" }
+rgcs-ai = { path = "crates/rgcs-ai" }
+rgcs-guard = { path = "crates/rgcs-guard" }
+rgcs-env = { path = "crates/rgcs-env" }
+reqwest = { version = "0.12", default-features = false }
+url = "2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["float_roundtrip"] }
+ts-rs = { version = "12.0", features = ["serde-compat"] }
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "net", "signal", "fs"] }
+thiserror = "2.0"
+num-traits = "0.2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+mavlink = { version = "0.19.1", default-features = false, features = ["std", "tokio", "transport-udp", "transport-tcp", "transport-direct-serial", "serde", "dialect-ardupilotmega", "dialect-common", "format-generated-code", "mav2-message-extensions"] }
+axum = { version = "0.8", features = ["ws", "macros"] }
+tower-http = { version = "0.7", features = ["fs", "trace", "cors"] }
+toml = "1.1"
+futures = "0.3"
+anyhow = "1.0"
+dashmap = "6"
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "sqlite", "migrate", "macros"] }
+argon2 = { version = "0.6", default-features = false, features = ["alloc", "password-hash"] }
+uuid = { version = "1", features = ["v4"] }
+time = { version = "0.3", features = ["formatting", "parsing", "macros"] }
+axum-extra = { version = "0.12", features = ["cookie"] }
+tower = "0.5"
+http-body-util = "0.1"
+tokio-util = { version = "0.7", features = ["io"] }
+printpdf = { version = "0.12", default-features = false }
+csv = "1.4"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true
+
+# Password hashing is deliberately expensive; unoptimised it takes seconds per login in debug
+# builds (dev stack, E2E). Optimise just the hashing crates.
+[profile.dev.package.argon2]
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3

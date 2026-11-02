@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+      - name: TypeScript bindings are up to date
+        run: git diff --exit-code -- apps/rgcs-server/ui/src/shared/api/generated
+
+  cross-aarch64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cross --locked
+      - run: cross build --release --target aarch64-unknown-linux-gnu -p rgcs-server
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rgcs-server-aarch64
+          path: target/aarch64-unknown-linux-gnu/release/rgcs-server
+
+  ui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/rgcs-server/ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/rgcs-server/ui/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test -- --run
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/rgcs-server/ui/package-lock.json
+      - run: npm ci
+        working-directory: apps/rgcs-server/ui
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/rgcs-server/ui
+      - run: cargo build -p rgcs-server
+      - run: scripts/e2e.sh
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/rgcs-server/ui/test-results

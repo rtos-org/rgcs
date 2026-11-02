@@ -1,0 +1,8 @@
+# aarch64 (Raspberry Pi) cross build: `cross build --release --target aarch64-unknown-linux-gnu`
+# (cross-rs uses docker; a plain `cargo build --target …` needs a local linker, set below for linux hosts)
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+
+[env]
+# ts-rs writes TypeScript bindings here during `cargo test -p rgcs-core`
+TS_RS_EXPORT_DIR = { value = "apps/rgcs-server/ui/src/shared/api/generated", relative = true }

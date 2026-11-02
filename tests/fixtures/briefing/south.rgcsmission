@@ -1,0 +1,183 @@
+{
+  "format": "rgcsmission",
+  "version": 1,
+  "mission": {
+    "name": "south",
+    "sysid": null,
+    "default_alt": 50,
+    "default_frame": "rel",
+    "speed": 10,
+    "home": {
+      "lat": 36.2509,
+      "lon": 137.6385,
+      "alt": 1500
+    },
+    "items": [
+      {
+        "command": 22,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2509,
+        "lon": 137.6385,
+        "alt": 40,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2468576,
+        "lon": 137.6362721,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2468576,
+        "lon": 137.6407279,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2474565,
+        "lon": 137.6407279,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2474565,
+        "lon": 137.6362721,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2480553,
+        "lon": 137.6362721,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2480553,
+        "lon": 137.6407279,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2486542,
+        "lon": 137.6407279,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 16,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 36.2486542,
+        "lon": 137.6362721,
+        "alt": 50,
+        "autocontinue": true
+      },
+      {
+        "command": 20,
+        "frame": "rel",
+        "params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "lat": 0,
+        "lon": 0,
+        "alt": 0,
+        "autocontinue": true
+      }
+    ],
+    "fence": [
+      {
+        "kind": "polygon",
+        "inclusion": true,
+        "vertices": [
+          {
+            "lat": 36.2464084,
+            "lon": 137.6356038
+          },
+          {
+            "lat": 36.2464084,
+            "lon": 137.6413962
+          },
+          {
+            "lat": 36.2491034,
+            "lon": 137.6413962
+          },
+          {
+            "lat": 36.2491034,
+            "lon": 137.6356038
+          }
+        ]
+      }
+    ],
+    "rally": []
+  }
+}

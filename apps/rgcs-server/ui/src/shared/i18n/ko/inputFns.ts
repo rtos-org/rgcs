@@ -1,0 +1,25 @@
+import type { inputFnsJa } from '../inputFns'
+
+export const inputFnsKo: Record<keyof typeof inputFnsJa, string> = {
+  fn_none: '없음',
+  fn_pan: '팬',
+  fn_tilt: '틸트',
+  fn_shutter: '사진 촬영',
+  fn_record_toggle: '녹화 시작/정지',
+  fn_center_gimbal: '짐벌 중앙 정렬',
+  fn_thermal_toggle: '열화상 전환',
+  fn_thermal_gain_toggle: '열화상 게인 전환',
+  fn_focus_near: '초점 가까이',
+  fn_focus_far: '초점 멀리',
+  fn_ai_tracking_toggle: 'AI 추적 시작/정지',
+  fn_gimbal_stop: '짐벌 정지',
+  fn_zoom_in_step: '줌 인',
+  fn_zoom_out_step: '줌 아웃',
+  fn_zoom_1x: '줌 1x',
+  fn_mode_lock: '모드: 잠금',
+  fn_mode_follow: '모드: 추종',
+  fn_mode_fpv: '모드: FPV',
+  fn_mode_cycle: '모드 순환',
+  fn_roi: 'ROI {n} 추적',
+  fn_roi_stop: 'ROI 추적 정지',
+}

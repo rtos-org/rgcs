@@ -1,0 +1,28 @@
+import type { edit3dJa } from '../edit3d'
+
+export const edit3dKo: Record<keyof typeof edit3dJa, string> = {
+  mHelp8k: '3D: 번호/고도 칩을 위아래로 드래그',
+  mHelp8v: '고도만 변경(다중 선택 시 일괄)',
+  mHelp9k: '3D: 지면의 원을 드래그',
+  mHelp9v: '위치만 변경(고도 유지)',
+  mHelp10k: '경로 색상',
+  mHelp10v: '미션 1개: 2D는 고도, 3D는 상승각(수평은 하늘색, 급상승일수록 빨강, 하강은 보라). 여러 개: 목록 색상(3D 급상승은 빨강)',
+  mHelp11k: '구간 위 +를 길게 누른 뒤 드래그',
+  mHelp11v: '구간을 원호로 만듭니다(Arc WP, Copter 4.7 이상. 직선으로 되돌리면 일반 WP)',
+  guidedSwitching: 'GUIDED로 전환 중…',
+  guidedModeTimeout: '기체가 GUIDED로 전환되지 않아 이동 명령을 보내지 않았습니다',
+  trackMinutes: '궤적 유지 시간(분)',
+  trackMinutesNote: '운용 지도(2D/3D)에 최근 이 시간만큼의 비행 궤적을 남깁니다. 0이면 남기지 않습니다',
+  trackMinutesRange: '0–120분으로 입력하십시오',
+  trackMinutesSaved: '저장했습니다',
+  elevProfile: '고도 프로파일',
+  elevTerrainOk: '지형: 표고 타일',
+  elevTerrainNone: '지형 데이터 없음(홈 지면 기준 표시)',
+  elevGround: '지면',
+  elevFlight: '비행 고도',
+  elevAgl: 'AGL',
+  elevBelowGround: '경로 일부가 지면보다 낮습니다',
+  elevEmpty: '웨이포인트를 추가하면 표시됩니다',
+  transferWrite: '쓰는 중',
+  transferVerify: '다시 읽어 검증 중',
+}

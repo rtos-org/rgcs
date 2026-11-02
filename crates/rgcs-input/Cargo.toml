@@ -1,0 +1,10 @@
+[package]
+name = "rgcs-input"
+description = "Joystick input gate for RGCS: range check, rate limit, deadman, target switch"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+rgcs-core = { workspace = true }

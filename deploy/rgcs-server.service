@@ -1,0 +1,27 @@
+# RGCS ground control server on the companion Pi. Installed by deploy/install.sh.
+# Replaces mt11-camera-ui.service: both bind :8000 and the MT11 accepts one TCP client.
+[Unit]
+Description=RGCS ground control server
+After=network-online.target
+Wants=network-online.target
+Conflicts=mt11-camera-ui.service
+
+[Service]
+Type=simple
+User=rgcs
+Group=rgcs
+SupplementaryGroups=dialout
+Environment=RGCS_CONFIG=/etc/rgcs/config.toml
+Environment=RUST_LOG=info
+ExecStart=/opt/rgcs/bin/rgcs-server
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/rgcs
+ProtectHome=yes
+PrivateTmp=yes
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

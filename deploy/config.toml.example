@@ -1,0 +1,85 @@
+# /etc/rgcs/config.toml: rgcs-server start-up settings. Everything else is set in the UI and stored
+# in SQLite. install.sh creates this file only when it is missing and never overwrites it.
+#
+# TOML order matters: every top-level key comes before the first [table] / [[array]] section.
+
+# Listen address (open http://<Pi address>:8000 in the browser)
+listen = "0.0.0.0:8000"
+
+# Flight controller link. Default: where Rpanion-server forwards MAVLink.
+# Other forms: "tcp:127.0.0.1:5760", "udpin:0.0.0.0:14550", or a serial port "/dev/ttyAMA0,921600".
+mavlink_url = "udpin:127.0.0.1:15555"
+
+# Database, audience logo, downloaded logs, plugin overlay tiles
+data_dir = "/var/lib/rgcs"
+
+role = "standalone"
+
+# Telemetry frame interval to the browsers, in milliseconds
+# telemetry_interval_ms = 100
+
+# A built UI on disk instead of the one embedded in the binary
+# ui_dir = "/opt/rgcs/ui"
+
+# MediaMTX WHEP endpoint (the MT11 RTSP stream as WebRTC)
+# whep_upstream = "http://127.0.0.1:8889/mt11/whep"
+# video_probe_timeout_ms = 2000
+
+# The default base map. Replace it with a provider whose terms fit your use: OpenStreetMap's tile
+# servers are for light use only (https://operations.osmfoundation.org/policies/tiles/).
+# map_tile_url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+# map_attribution = "© OpenStreetMap contributors"
+
+# Terrarium DEM tiles for the 3D map; "" turns 3D off (offline sites)
+# terrain_tiles = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+
+# Plugins (map overlays, links): <plugins_dir>/<id>/plugin.toml, read at start (see PLUGINS.md)
+# plugins_dir = "/var/lib/rgcs/plugins"   # default: <data_dir>/plugins
+
+# DataFlash log download: auto = on for tcp / udp links and serial links at 921600 baud or more
+# log_fetch = "auto"                      # auto | on | off
+
+# Base maps offered in the map-type menu. Any [[basemaps]] entry replaces all the defaults (the
+# map_tile_url map, GSI standard, GSI photo), so list every map you want.
+# Example with satellite imagery (Esri World Imagery with CARTO place labels). Both have terms of
+# use, and business use may need a contract or an account. Read the providers' terms first:
+#   https://www.esri.com/en-us/legal/terms/full-master-agreement / https://carto.com/basemaps
+# [[basemaps]]
+# id = "map"
+# label = "Map"
+# tiles = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
+# attribution = "© OpenStreetMap contributors"
+# max_zoom = 19
+#
+# [[basemaps]]
+# id = "satellite"
+# label = "Satellite"
+# tiles = ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"]
+# attribution = "Esri, Maxar, Earthstar Geographics | © CARTO © OpenStreetMap contributors"
+# max_zoom = 19
+# overlay = ["https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png", "https://b.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png"]
+#
+# [[basemaps]]
+# id = "gsi_photo"
+# label = "GSI photo"
+# tiles = ["https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"]
+# attribution = "地理院タイル"
+# max_zoom = 18
+
+# External data (weather, space weather). API keys are never written here: name the environment
+# variables that hold them (e.g. a systemd EnvironmentFile with mode 0600).
+# [env]
+# open_meteo_api_key_env = "OPEN_METEO_API_KEY"   # Open-Meteo's free API is non-commercial only
+# openweathermap_api_key_env = "OWM_API_KEY"
+
+# AI chat: it only proposes commands; nothing is sent until the operator presses Run. Off by
+# default. The key comes from an environment variable, never from this file.
+# [ai]
+# provider = "anthropic"            # none | anthropic | openai_compat
+# model = "claude-sonnet-5-5"
+# api_key_env = "ANTHROPIC_API_KEY"
+# daily_token_budget = 2000000      # tokens per rolling 24 h (0 = unlimited)
+# A local OpenAI-compatible server (Ollama and the like):
+# provider = "openai_compat"
+# base_url = "http://127.0.0.1:11434/v1"
+# model = "qwen3:8b"

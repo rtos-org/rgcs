@@ -1,0 +1,1 @@
+{"coord":{"lon":137.64,"lat":36.25},"weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10d"}],"main":{"temp":8.1,"feels_like":5.2,"pressure":1012,"humidity":80},"wind":{"speed":7.0,"deg":250,"gust":12.9},"rain":{"1h":0.4},"dt":1792897200,"name":"Test","cod":200}

@@ -1,0 +1,39 @@
+/* Detail panel instruments: attitude indicator + compass (Glass, dark). Never edit prototype.css. */
+.instruments {
+  --inst-sky: #3b6c9c;
+  --inst-ground: #6e5236;
+  --inst-dial: rgba(10, 14, 20, .55);
+  padding: 10px 12px 2px;
+  border-top: 1px solid var(--line-soft);
+}
+.instruments-dials { display: flex; justify-content: space-around; gap: 8px; }
+.instrument { width: min(45%, 120px); aspect-ratio: 1; height: auto; display: block; overflow: visible; }
+.instrument line, .instrument path, .instrument circle { vector-effect: non-scaling-stroke; }
+.instrument.nodata { opacity: .38; filter: grayscale(1); }
+
+.attitude .sky { fill: var(--inst-sky); }
+.attitude .ground { fill: var(--inst-ground); }
+.attitude .horizon-line { stroke: var(--text); stroke-width: 1.2; }
+.attitude .ladder line { stroke: rgba(255, 255, 255, .8); stroke-width: 1; }
+.attitude .bezel { stroke: var(--line-hi); stroke-width: 1.5; }
+.attitude .roll-scale path, .attitude .roll-scale line { stroke: var(--text-2); stroke-width: 1.2; }
+.attitude .roll-pointer { fill: var(--text); }
+.attitude .aircraft path { stroke: var(--caution); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.attitude .aircraft circle { fill: var(--caution); }
+
+.compass .dial { fill: var(--inst-dial); stroke: var(--line-hi); stroke-width: 1.5; }
+.compass .card-ring { stroke: var(--line); stroke-width: 1; }
+.compass line { stroke: var(--text-3); stroke-width: 1.2; }
+.compass line.major { stroke: var(--text-2); stroke-width: 1.6; }
+.compass text { fill: var(--text-2); font: 600 12px var(--font); text-anchor: middle; dominant-baseline: central; }
+.compass text.north { fill: var(--danger); }
+.compass .cog { fill: var(--ok); }
+.compass .lubber { fill: var(--caution); }
+.compass .aircraft { fill: var(--accent); opacity: .9; }
+.compass .aircraft .arm { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+.compass .aircraft .rotor { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+.compass .aircraft .nose { fill: var(--on-accent); }
+
+.instruments-values { display: flex; justify-content: center; gap: 16px; padding: 6px 0 2px; font-size: 13px; color: var(--text); }
+.instruments-values .lbl { color: var(--text-3); font-size: 11px; }
+/* a rover: the compass alone, larger */

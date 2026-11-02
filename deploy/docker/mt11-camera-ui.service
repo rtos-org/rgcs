@@ -1,0 +1,16 @@
+# Stand-in for the Python MT11 app (siyi-mt11-cameracontrol/deploy/mt11-camera-ui.service):
+# same unit name, same user, same port, so the installer's takeover can be tested.
+[Unit]
+Description=MT11 Camera Control UI (FastAPI) — stand-in
+After=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/usr/bin/python3 -m http.server 8000
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

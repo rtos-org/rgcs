@@ -1,0 +1,203 @@
+/* Sign-in screen + "through the clouds" transition (2026-10-25; designs 09 3D Terrain / 10 Daylight Glass).
+ * Layers, bottom to top: .ls-backdrop → .shell (mounted at `done`) → .ls-overlay (.ls-clouds, .ls-ui).
+ * Phases come from features/auth/intro.ts as data-phase; the app's entrance keys off html[data-intro].
+ * Only opacity and transform (incl. `translate`) ever animate. */
+
+:root {
+  --ls-ease: cubic-bezier(0.45, 0.05, 0.25, 1);
+  --ls-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- backdrop ---------- */
+.ls-backdrop { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+.ls-backdrop[data-theme='dark'] { background: linear-gradient(180deg, #0a1018 0%, #16243a 38%, #2a3b4e 50%); }
+.ls-backdrop[data-theme='light'] { background: #c9d3cc; }
+.ls-ground { position: absolute; left: 0; right: 0; top: 45%; bottom: 0; perspective: 900px; perspective-origin: 50% 0%; }
+.ls-terrain {
+  position: absolute; top: 0; left: -60%; width: 220%; height: 260%; object-fit: cover;
+  transform-origin: 50% 0; transform: rotateX(62deg); filter: brightness(0.8) saturate(1.05);
+  transition: transform 3400ms var(--ls-ease);
+}
+.ls-fog { position: absolute; left: 0; right: 0; top: 38%; height: 26%; background: linear-gradient(180deg, rgba(42, 59, 78, 0), rgba(42, 59, 78, 0.9) 45%, rgba(42, 59, 78, 0)); }
+.ls-map {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(1.35) saturate(1.1) contrast(0.9); transform: scale(1);
+  transition: transform 3200ms var(--ls-ease);
+}
+.ls-wash { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.12); }
+.ls-backdrop:not([data-phase='idle']) .ls-terrain { transform: rotateX(62deg) translate3d(0, -10%, 0); will-change: transform; }
+.ls-backdrop:not([data-phase='idle']) .ls-map { transform: scale(1.08); will-change: transform; }
+
+/* ---------- overlay: clouds + login UI, above the app ---------- */
+.ls-overlay { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+
+.ls-clouds { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+/* Drift lives on the wrapper; fade and zoom on the image, so the two transforms never fight. */
+.ls-drift { position: absolute; inset: -6%; }
+.ls-drift-thin { animation: ls-drift-thin 46s ease-in-out infinite alternate; }
+.ls-drift-dense { animation: ls-drift-dense 58s ease-in-out infinite alternate; }
+.ls-clouds[data-phase='idle'] .ls-drift { animation-play-state: paused; }
+@keyframes ls-drift-thin { from { transform: translate3d(-2%, 0.5%, 0); } to { transform: translate3d(2%, -1%, 0); } }
+@keyframes ls-drift-dense { from { transform: translate3d(1.5%, 1%, 0); } to { transform: translate3d(-1.5%, -0.5%, 0); } }
+
+.ls-cloud {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transform: scale(1.06);
+  /* idle: also the 800 ms fade-out after a failed sign-in */
+  transition: opacity 800ms var(--ls-ease), transform 800ms var(--ls-ease);
+}
+.ls-haze, .ls-dusk { position: absolute; inset: 0; opacity: 0; transition: opacity 800ms var(--ls-ease); }
+.ls-clouds[data-theme='light'] .ls-haze { background: #eef2f6; }
+.ls-clouds[data-theme='dark'] .ls-haze { background: #4e5d72; }
+.ls-dusk { background: #4e5d72; }
+
+/* gather (and done, which keeps every target so running transitions continue) */
+.ls-clouds:is([data-phase='gather'], [data-phase='done'], [data-phase='clear']) :is(.ls-cloud, .ls-haze, .ls-dusk) { will-change: transform, opacity; }
+.ls-clouds:is([data-phase='gather'], [data-phase='done']) .ls-cloud { opacity: 1; transform: scale(1); }
+.ls-clouds:is([data-phase='gather'], [data-phase='done']) .ls-thin { transition: opacity 1500ms var(--ls-ease), transform 3600ms var(--ls-ease-out); }
+.ls-clouds:is([data-phase='gather'], [data-phase='done']) .ls-dense { transition: opacity 1900ms var(--ls-ease) 450ms, transform 3600ms var(--ls-ease-out); }
+.ls-clouds:is([data-phase='gather'], [data-phase='done']) .ls-haze { opacity: 0.75; transition: opacity 2000ms var(--ls-ease) 900ms; }
+.ls-clouds[data-theme='light']:is([data-phase='gather'], [data-phase='done']) .ls-haze { opacity: 0.72; }
+/* Light sign-in into the dark app: under full cover the haze shifts toward the app's dark tone. */
+.ls-clouds[data-phase='done'] .ls-dusk { opacity: 0.6; transition: opacity 700ms var(--ls-ease); }
+
+/* clear: haze lifts → dense thins into gaps → thin melts last; all uniform, no sweep */
+.ls-clouds[data-phase='clear'] .ls-haze { opacity: 0; transition: opacity 1700ms var(--ls-ease); }
+.ls-clouds[data-phase='clear'] .ls-dusk { opacity: 0; transition: opacity 2400ms var(--ls-ease) 250ms; }
+.ls-clouds[data-phase='clear'] .ls-dense { opacity: 0; transform: scale(1.12); transition: opacity 2400ms var(--ls-ease) 250ms, transform 4400ms var(--ls-ease-out); }
+.ls-clouds[data-phase='clear'] .ls-thin { opacity: 0; transform: scale(1.08); transition: opacity 2800ms var(--ls-ease) 1000ms, transform 4400ms var(--ls-ease-out); }
+
+/* ---------- login UI ---------- */
+.ls-ui {
+  position: absolute; inset: 0; display: grid; place-items: center; padding: 72px 16px 40px; overflow: auto;
+  pointer-events: auto; font-family: var(--font);
+  transition: opacity 700ms var(--ls-ease), transform 700ms var(--ls-ease);
+}
+.ls-ui[data-theme='dark'] { color: #f2f5f8; }
+.ls-ui[data-theme='light'] { color: #0b1220; }
+.ls-overlay:is([data-phase='done'], [data-phase='clear']) .ls-ui { opacity: 0; transform: translate3d(0, -10px, 0) scale(0.985); pointer-events: none; }
+.ls-overlay[data-reduced][data-phase='done'] .ls-ui { transform: none; transition: opacity 300ms ease; }
+
+.ls-card { width: 100%; max-width: 420px; border-radius: 28px; display: flex; flex-direction: column; gap: 14px; }
+.ls-ui[data-theme='dark'] .ls-card {
+  padding: 34px; margin-top: -8vh;
+  background: rgba(18, 24, 34, 0.5); -webkit-backdrop-filter: blur(30px) saturate(150%); backdrop-filter: blur(30px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 40px 90px rgba(0, 0, 0, 0.55);
+}
+.ls-ui[data-theme='light'] .ls-card {
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.66); -webkit-backdrop-filter: blur(30px) saturate(170%); backdrop-filter: blur(30px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: inset 0 1px 0 #fff, 0 30px 80px rgba(11, 30, 20, 0.28);
+}
+.ls-head { display: grid; gap: 6px; text-align: center; margin-bottom: 6px; }
+.ls-title { margin: 0; font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: 0.01em; }
+
+.ls-field { display: grid; gap: 6px; font-size: 12px; font-weight: 500; }
+.ls-ui[data-theme='dark'] .ls-field { color: rgba(242, 245, 248, 0.72); }
+.ls-ui[data-theme='light'] .ls-field { color: #3d4654; font-size: 13px; }
+.ls-in { width: 100%; border-radius: 14px; padding: 0 16px; outline: none; }
+.ls-ui[data-theme='dark'] .ls-in { height: 50px; font-size: 15px; color: #f2f5f8; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.12); }
+.ls-ui[data-theme='dark'] .ls-in:focus { border-color: #a8c7fa; box-shadow: 0 0 0 4px rgba(168, 199, 250, 0.18); }
+.ls-ui[data-theme='light'] .ls-in { height: 54px; font-size: 16px; color: #0b1220; background: rgba(255, 255, 255, 0.8); border: 1.5px solid rgba(11, 18, 32, 0.16); }
+.ls-ui[data-theme='light'] .ls-in:focus { border-color: #1f5fbf; box-shadow: 0 0 0 4px rgba(31, 95, 191, 0.16); }
+.ls-ui[data-theme='dark'] .ls-card[data-error] .ls-in { border-color: #ff6961; }
+.ls-ui[data-theme='light'] .ls-card[data-error] .ls-in { border-color: #c4302b; }
+.ls-err { min-height: 18px; font-size: 13px; }
+.ls-ui[data-theme='dark'] .ls-err { color: #ff8a84; }
+.ls-ui[data-theme='light'] .ls-err { color: #b42318; }
+
+.ls-btn { display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 999px; font-weight: 600; font-size: 15px; }
+.ls-btn:disabled { opacity: 1; cursor: default; }
+.ls-ui[data-theme='dark'] .ls-btn { height: 52px; background: #a8c7fa; color: #0b1220; }
+.ls-ui[data-theme='light'] .ls-btn { height: 56px; background: #1f5fbf; color: #fff; font-size: 16px; }
+.ls-spin { animation: ls-spin 0.9s linear infinite; }
+@keyframes ls-spin { to { transform: rotate(360deg); } }
+
+.ls-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; }
+.ls-note { display: flex; flex-direction: column; gap: 1px; font-size: 11px; line-height: 1.35; }
+.ls-cred { font-family: var(--mono); white-space: nowrap; }
+.ls-ui[data-theme='dark'] .ls-note { color: rgba(242, 245, 248, 0.55); }
+.ls-ui[data-theme='light'] .ls-note { color: #5a6474; }
+.ls-seg { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; flex: none; width: 168px; height: 34px; padding: 3px; border-radius: 999px; }
+.ls-seg button { position: relative; z-index: 1; border: none; background: transparent; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.ls-lens { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 6px) / 2); border-radius: 999px; transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); pointer-events: none; }
+.ls-ui[data-theme='dark'] .ls-seg { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+.ls-ui[data-theme='dark'] .ls-seg button { color: rgba(242, 245, 248, 0.6); }
+.ls-ui[data-theme='dark'] .ls-seg button.on { color: #f2f5f8; }
+.ls-ui[data-theme='dark'] .ls-lens { background: rgba(255, 255, 255, 0.16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.ls-ui[data-theme='light'] .ls-seg { background: rgba(11, 18, 32, 0.06); border: 1px solid rgba(11, 18, 32, 0.1); }
+.ls-ui[data-theme='light'] .ls-seg button { color: #5a6474; }
+.ls-ui[data-theme='light'] .ls-seg button.on { color: #0b1220; }
+.ls-ui[data-theme='light'] .ls-lens { background: #fff; box-shadow: 0 1px 4px rgba(11, 18, 32, 0.14); }
+
+/* top corners */
+.ls-brand { position: absolute; top: 18px; left: 24px; display: flex; align-items: center; gap: 10px; }
+.ls-logo { font-size: 18px; font-weight: 600; letter-spacing: 0.04em; }
+.ls-dev { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 9px; border-radius: 999px; }
+.ls-ui[data-theme='dark'] .ls-dev { background: rgba(242, 201, 76, 0.16); color: #f2c94c; }
+.ls-ui[data-theme='light'] .ls-dev { background: #fff1c2; color: #7a5600; }
+.ls-pill { height: 40px; padding: 0 14px; border-radius: 999px; display: flex; align-items: center; gap: 10px; }
+.ls-ui[data-theme='dark'] .ls-pill {
+  background: rgba(18, 24, 34, 0.45); border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.ls-ui[data-theme='light'] .ls-pill {
+  background: rgba(255, 255, 255, 0.66); border: 1px solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(20px) saturate(170%); backdrop-filter: blur(20px) saturate(170%);
+  box-shadow: inset 0 1px 0 #fff, 0 8px 24px rgba(11, 30, 20, 0.16);
+}
+.ls-ui[data-theme='light'] .ls-brand { top: 14px; left: 16px; }
+.ls-host { position: absolute; top: 14px; right: 24px; }
+.ls-ui[data-theme='dark'] .ls-host { color: rgba(242, 245, 248, 0.85); }
+.ls-ui[data-theme='light'] .ls-host { right: 16px; }
+.ls-dot { width: 8px; height: 8px; border-radius: 50%; background: #9aa6b3; }
+.ls-dot.up { background: #2e9d62; box-shadow: 0 0 0 3px rgba(46, 157, 98, 0.18); }
+.ls-hostname { font-family: var(--mono); font-size: 13px; }
+
+.ls-credit { position: absolute; right: 12px; bottom: 8px; font-size: 10px; line-height: 1.4; padding: 2px 8px; border-radius: 6px; }
+.ls-ui[data-theme='dark'] .ls-credit { color: rgba(242, 245, 248, 0.55); }
+.ls-ui[data-theme='light'] .ls-credit { color: rgba(11, 18, 32, 0.72); background: rgba(255, 255, 255, 0.55); }
+.ls-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .ls-brand { top: 14px; left: 16px; }
+  .ls-host { right: 16px; }
+  .ls-ui[data-theme='dark'] .ls-card { padding: 28px 22px; margin-top: -4vh; }
+  .ls-ui[data-theme='light'] .ls-card { padding: 30px 22px; }
+  .ls-foot { flex-wrap: wrap; }
+}
+
+/* ---------- the app's entrance (Shell untouched: html[data-intro] from App) ---------- */
+/* done: mounted but invisible, so tiles loading in never show as squares through the clouds */
+html[data-intro='done'] .shell { opacity: 0; transform: scale(1.05); will-change: transform, opacity; }
+html[data-intro='done'] .shell :is(.header, .float-l, .float-r, .footer-log) { opacity: 0; }
+/* clear: the drawn app replaces the backdrop under the lifting haze, then settles from 1.05 */
+html[data-intro='clear'] .shell { transform: scale(1); will-change: transform, opacity; transition: transform 4000ms var(--ls-ease-out); animation: ls-fade 900ms var(--ls-ease) both; }
+html[data-intro='clear'] .shell :is(.header, .float-l, .float-r, .footer-log) {
+  will-change: opacity, translate;
+  animation: ls-fade 600ms var(--ls-ease) var(--ls-in-at) both, ls-slide 800ms var(--ls-ease-out) var(--ls-in-at) both;
+}
+html[data-intro='clear'] .shell .header { --ls-in-at: 1020ms; --ls-from: 0 -18px; }
+html[data-intro='clear'] .shell .float-l { --ls-in-at: 1120ms; --ls-from: -24px 0; }
+html[data-intro='clear'] .shell .float-r { --ls-in-at: 1220ms; --ls-from: 24px 0; }
+html[data-intro='clear'] .shell .footer-log { --ls-in-at: 1320ms; --ls-from: 0 18px; }
+html[data-intro='fade'] .shell { animation: ls-fade 300ms ease both; }
+@keyframes ls-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ls-slide { from { translate: var(--ls-from); } to { translate: 0 0; } }
+
+/* ---------- settings: 表示 ---------- */
+.lb-cards .seg.theme { width: 300px; height: 40px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-clouds { display: none; }
+  .ls-spin { animation: none; }
+  .ls-terrain, .ls-map { transition: none; }
+  .ls-backdrop:not([data-phase='idle']) .ls-terrain { transform: rotateX(62deg); }
+  .ls-backdrop:not([data-phase='idle']) .ls-map { transform: scale(1); }
+}
+/* four languages (LangSwitch) */
+.ls-foot:has(.lang4) { flex-wrap: wrap; row-gap: 10px; }
+.ls-seg.lang4 { width: 100%; }
+.ls-seg.lang4 .ls-lens { width: calc((100% - 6px) / 4); }
+.ls-seg.lang4 button { font-size: 11px; padding: 0 2px; }

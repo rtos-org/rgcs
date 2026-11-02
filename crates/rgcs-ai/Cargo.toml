@@ -1,0 +1,28 @@
+[package]
+name = "rgcs-ai"
+description = "RGCS AI assistant: LLM adapters, tool definitions, system prompt and the bounded tool loop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[features]
+# In-process scripted LLM and a fake provider HTTP server, for tests only.
+fake = ["dep:axum"]
+
+[dependencies]
+rgcs-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+async-trait = "0.1"
+reqwest = { workspace = true, features = ["json", "rustls-tls"] }
+uuid = { workspace = true }
+axum = { workspace = true, optional = true }
+
+[dev-dependencies]
+rgcs-ai = { path = ".", features = ["fake"] }
+tokio = { workspace = true, features = ["test-util"] }
+toml = { workspace = true }

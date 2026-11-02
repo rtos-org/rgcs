@@ -1,0 +1,25 @@
+import type { inputFnsJa } from '../inputFns'
+
+export const inputFnsZh: Record<keyof typeof inputFnsJa, string> = {
+  fn_none: '无',
+  fn_pan: '平移',
+  fn_tilt: '俯仰',
+  fn_shutter: '拍照',
+  fn_record_toggle: '开始/停止录像',
+  fn_center_gimbal: '云台回中',
+  fn_thermal_toggle: '切换热成像',
+  fn_thermal_gain_toggle: '切换热成像增益',
+  fn_focus_near: '近焦',
+  fn_focus_far: '远焦',
+  fn_ai_tracking_toggle: '开始/停止 AI 跟踪',
+  fn_gimbal_stop: '停止云台',
+  fn_zoom_in_step: '放大',
+  fn_zoom_out_step: '缩小',
+  fn_zoom_1x: '变焦 1x',
+  fn_mode_lock: '模式：锁定',
+  fn_mode_follow: '模式：跟随',
+  fn_mode_fpv: '模式：FPV',
+  fn_mode_cycle: '循环切换模式',
+  fn_roi: '跟踪 ROI {n}',
+  fn_roi_stop: '停止 ROI 跟踪',
+}

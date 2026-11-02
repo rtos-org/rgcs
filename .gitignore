@@ -1,0 +1,19 @@
+.DS_Store
+node_modules/
+*.log
+target/
+dist/
+.dev/
+.superpowers/
+test-results/
+playwright-report/
+
+# Pi build artifacts (scripts/build-pi.sh)
+/dist/
+
+# Never commit: local TLS material, agent settings, secrets
+auto.crt
+auto.key
+.claude/
+.env
+.env.*

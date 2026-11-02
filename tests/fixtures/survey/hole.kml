@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>池のあるエリア</name>
+    <Polygon>
+      <outerBoundaryIs><LinearRing><coordinates>
+        137.640,36.250,0 137.650,36.250,0 137.650,36.258,0 137.640,36.258,0 137.640,36.250,0
+      </coordinates></LinearRing></outerBoundaryIs>
+      <innerBoundaryIs><LinearRing><coordinates>
+        137.644,36.253,0 137.646,36.253,0 137.646,36.255,0 137.644,36.255,0 137.644,36.253,0
+      </coordinates></LinearRing></innerBoundaryIs>
+    </Polygon>
+  </Placemark>
+</kml>

@@ -1,0 +1,23 @@
+id = "openseamap"
+api = 1
+version = "1.0.0"
+name = { en = "OpenSeaMap", ja = "OpenSeaMap" }
+description = { en = "Sea marks from OpenSeaMap over the base map." }
+homepage = "https://openseamap.org/"
+
+[[overlay]]
+id = "seamarks"
+name = { en = "Sea marks", ja = "海図標識" }
+tiles = "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+cache = "direct"
+format = "png"
+tile_size = 256
+min_zoom = 9
+max_zoom = 18
+default_opacity = 100
+attribution = "© OpenSeaMap contributors (CC BY-SA)"
+notice = { en = "Not for navigation", ja = "航海用ではありません" }
+
+[[link]]
+label = { en = "OpenSeaMap website", ja = "OpenSeaMap のサイト" }
+url = "https://map.openseamap.org/"

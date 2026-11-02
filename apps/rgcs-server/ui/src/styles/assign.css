@@ -1,0 +1,102 @@
+/* Plan assignment board (spec 2026-10-31, mock assign-board.html). Tokens from prototype.css. */
+
+/* panel frame: header, filter, hint, a list that scrolls inside the panel */
+.as-panel { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.as-ph { display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; }
+.as-ph h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.as-count { color: var(--text-3); font-size: 12px; }
+.as-search { display: block; margin: 0 16px 10px; position: relative; }
+.as-search input { width: 100%; height: 44px; border-radius: var(--r-ctl); border: 1px solid var(--line); background: rgba(0,0,0,.22); color: var(--text); padding: 0 12px 0 34px; outline: none; font: inherit; }
+.as-search input:focus { border-color: var(--accent-line); }
+.as-search .ic { position: absolute; left: 11px; top: 14px; width: 16px; height: 16px; color: var(--text-4); pointer-events: none; }
+.as-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 12px 12px; overscroll-behavior: contain; }
+.as-hint { margin: 0 16px 10px; font-size: 11.5px; color: var(--text-3); line-height: 1.5; }
+.as-hint b { color: var(--text-2); font-weight: 600; }
+.as-scroll .as-hint { margin: 4px; }
+
+/* plan cards */
+.as-plist { display: flex; flex-direction: column; gap: 8px; }
+.as-pcard { position: relative; display: grid; grid-template-columns: 14px 1fr auto; gap: 4px 10px; align-items: center; min-height: 64px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.035); cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y; transition: background .15s, border-color .15s, transform .15s, box-shadow .15s; }
+.as-pcard:hover { background: rgba(255,255,255,.06); }
+.as-pcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.as-pcard.picked { border-color: var(--accent); background: var(--accent-tint); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+.as-pcard.lifting { opacity: .35; }
+.as-pcard.dirty { cursor: not-allowed; }
+.as-chip { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,.35); flex: none; }
+.as-pname { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-pmeta { grid-column: 2 / 4; display: flex; align-items: center; gap: 10px; color: var(--text-3); font-size: 11.5px; flex-wrap: wrap; }
+.as-ptag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line-hi); color: var(--text-2); white-space: nowrap; }
+.as-ptag.none { color: var(--text-4); border-style: dashed; }
+.as-ptag.warn { color: var(--caution); border-color: var(--caution-line); }
+.as-grip { color: var(--text-4); }
+.as-pcard.dirty .as-grip { color: var(--caution); }
+.as-why { font-size: 11px; color: var(--danger); line-height: 1.35; }
+.as-pnote { grid-column: 2 / 4; color: var(--caution); }
+
+/* drag ghost: drawn by the board at the pointer */
+.as-ghost { position: fixed; z-index: 50; pointer-events: none; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--glass-strong); border: 1px solid var(--accent-line); box-shadow: 0 16px 40px rgba(0,0,0,.5); font-weight: 600; transform: translate(-50%, -130%) rotate(-2deg); }
+.as-ghost .as-chip { width: 12px; height: 12px; }
+
+/* vehicle cards: at most two columns, the list scrolls inside the panel, the footer stays */
+.as-vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 8px; }
+.as-vcard { position: relative; display: flex; flex-direction: column; gap: 7px; min-height: 132px; padding: 10px 11px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.035); cursor: pointer; user-select: none; -webkit-user-select: none; transition: background .15s, border-color .15s, opacity .15s, box-shadow .15s; }
+.as-vcard:hover { background: rgba(255,255,255,.06); }
+.as-vcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.as-vcard.off { background: rgba(255,255,255,.015); }
+.as-vcard.armed { border-color: var(--danger-line); }
+.as-vcard.can { border-color: var(--accent-line); box-shadow: inset 0 0 0 1px var(--accent-line); }
+.as-vcard.over { border-color: var(--accent); background: var(--accent-tint); box-shadow: inset 0 0 0 1px var(--accent); }
+.as-vcard.cannot { opacity: .45; }
+.as-vtop { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.as-vtop > .ic { color: var(--text-2); flex: none; }
+.as-vname { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-vkind { color: var(--text-3); font-size: 11px; white-space: nowrap; }
+.as-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); flex: none; margin-left: auto; }
+.as-dot.off { background: var(--text-4); }
+.as-vsub { display: flex; gap: 8px; align-items: center; color: var(--text-3); font-size: 11.5px; min-height: 18px; flex-wrap: wrap; }
+.as-mode { font-family: var(--mono); font-size: 10.5px; padding: 0 6px; border: 1px solid var(--line-hi); border-radius: 6px; color: var(--text-2); }
+.as-mode.armed { color: var(--danger); border-color: var(--danger-line); }
+.as-nogps { color: var(--caution); }
+.as-slot { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 4px 4px 4px 8px; border-radius: 10px; border: 1px dashed var(--line-hi); color: var(--text-4); font-size: 12px; }
+.as-slot.filled { border-style: solid; border-color: var(--line); background: rgba(0,0,0,.18); color: var(--text); cursor: grab; touch-action: pan-y; }
+.as-slot .as-chip { width: 11px; height: 11px; border-radius: 3px; }
+.as-sname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.as-x { width: 28px; height: 28px; border: 0; background: none; border-radius: 8px; display: grid; place-items: center; color: var(--text-3); cursor: pointer; flex: none; padding: 0; }
+.as-x:hover { background: rgba(255,255,255,.08); color: var(--text); }
+.as-vfoot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+.as-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-hi); color: var(--text-3); white-space: nowrap; }
+.as-badge.ok { color: var(--ok); border-color: rgba(95,211,155,.45); background: rgba(95,211,155,.14); }
+.as-badge.wait { color: var(--caution); border-color: var(--caution-line); background: var(--caution-tint); }
+.as-badge.fly { color: var(--danger); border-color: var(--danger-line); background: var(--danger-tint); }
+.as-bat { font-size: 11px; color: var(--text-3); margin-left: auto; }
+.as-bat.amber { color: var(--caution); }
+.as-bat.red { color: var(--danger); font-weight: 600; }
+.as-write { height: 30px; min-height: 28px; }
+.as-flash { position: absolute; inset: auto 8px 8px; padding: 4px 8px; border-radius: 8px; background: var(--glass-strong); border: 1px solid var(--line-hi); font-size: 11.5px; color: var(--caution); pointer-events: none; }
+.as-foot { padding: 12px 16px 14px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; flex: none; }
+.as-write-all { height: 44px; }
+.as-footnote { font-size: 11px; color: var(--text-4); text-align: center; }
+
+/* map overlay (§3.4): plan names at their start, vehicles filled with their plan's colour */
+.as-map-label { font: 600 12px/1 var(--font); white-space: nowrap; pointer-events: none; text-shadow: 0 0 3px #0b1018, 0 0 3px #0b1018, 0 0 2px #0b1018; }
+.rg-mk.as-veh .vmk .disc { background: var(--as-plan, #4b5664); color: #fff; }
+
+/* the planner's 編集 | 割当 switch (§3.1): left of the 300 px plan tabs (the right of the top row
+   holds 2D / 3D and help); centred over the map on the board, where the tabs are gone */
+.as-modes { z-index: 3; height: 40px; width: 120px; left: calc(50% + (var(--aside-w) - var(--right-w)) / 2 - 158px); transform: translateX(-100%); }
+.mission-view.assign-mode .as-modes { left: calc(50% + (var(--aside-w) - var(--right-w)) / 2); transform: translateX(-50%); }
+/* the board's panels: plans narrow on the left, two columns of vehicles on the right */
+.mission-view.assign-mode { --aside-w: 300px; --right-w: 444px; }
+@media (max-width: 1280px) { .mission-view.assign-mode { --aside-w: 260px; --right-w: 380px; } }
+.as-err { color: var(--danger); }
+
+/* open-plan rows (edit mode): the vehicles the saved plan is assigned to, read-only (§9) */
+.plans-vchips { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 120px; flex: none; }
+.plans-vchip { font: inherit; font-size: 10.5px; line-height: 1.5; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--line-hi); color: var(--text-2); background: none; cursor: pointer; white-space: nowrap; }
+.plans-vchip:hover { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+.plans-vchip.none { border-style: dashed; color: var(--text-4); }
+
+/* undo toast: bottom centre of the map */
+.as-toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 20; display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 14px; border-radius: 14px; font-size: 12.5px; max-width: calc(100% - 32px); }
+.as-toast > span { min-width: 0; overflow-wrap: anywhere; }
+.as-undo { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; font-size: 12px; }

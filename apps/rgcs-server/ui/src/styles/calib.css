@@ -1,0 +1,46 @@
+/* メンテナンス › 点検・校正: the prototype's card grid (auto-fit 260 px, gap 12,
+   .surface padding 18) plus the open card's live session. */
+.calib-body { flex-direction: column; gap: 10px; overflow-y: auto; }
+.calib-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); grid-auto-flow: row dense; gap: 12px; align-content: start; }
+/* the open card takes a whole row; dense packing lets the closed cards close the gap it leaves */
+.calib-card { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.calib-card.open { grid-column: 1 / -1; border-color: var(--line); background: rgba(255, 255, 255, 0.05); }
+.calib-head { gap: 10px; }
+.calib-close { margin-left: auto; }
+.calib-status { font-size: 12px; }
+.calib-start { align-self: flex-start; }
+.calib-note { padding: 0 4px; }
+
+.dot.tone-ok { background: var(--ok); }
+.dot.tone-warn { background: var(--caution); }
+.dot.tone-err { background: var(--danger); }
+.dot.tone-idle { background: #8a97a5; }
+.dot.tone-run { background: var(--accent); animation: calib-pulse 1.2s ease-in-out infinite; }
+@keyframes calib-pulse { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .dot.tone-run { animation: none; } }
+
+.calib-flow { display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
+.calib-hint { font-size: 13px; line-height: 1.6; }
+.calib-actions { gap: 8px; }
+.calib-result { font-size: 15px; font-weight: 500; }
+
+.calib-steps { display: flex; gap: 6px; }
+.calib-steps > span { width: 28px; height: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+.calib-steps > span.done { background: var(--ok); }
+.calib-steps > span.on { background: var(--accent); }
+.calib-pos { font-size: 22px; font-weight: 600; color: var(--accent); }
+
+.calib-meter { display: grid; grid-template-columns: 84px minmax(0, 1fr) 96px; align-items: center; gap: 10px; font-size: 13px; }
+.calib-meter .bar { position: relative; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.calib-meter .bar > span { display: block; height: 100%; background: var(--accent); transition: width 0.3s; }
+.calib-meter .bar.rc { overflow: visible; }
+.calib-meter .bar.rc > .range { position: absolute; top: 0; bottom: 0; background: var(--accent-tint); border: 1px solid var(--accent-line); border-radius: 999px; transition: none; }
+.calib-meter .bar.rc > .mark { position: absolute; top: -3px; width: 3px; height: 14px; margin-left: -1px; border-radius: 2px; background: var(--accent); transition: none; }
+
+.calib-props { gap: 10px; cursor: pointer; }
+.calib-inputs { gap: 16px; }
+.calib-inputs label { display: inline-flex; align-items: center; gap: 6px; }
+.calib-inputs .in { width: 64px; }
+.calib-motors { display: flex; flex-wrap: wrap; gap: 8px; }
+.calib-motors .btn { width: 46px; }
+.calib-flow > .btn { align-self: flex-start; }

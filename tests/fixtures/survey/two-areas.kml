@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>北エリア</name>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        137.640,36.255,0 137.645,36.255,0 137.645,36.258,0 137.640,36.258,0 137.640,36.255,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+    <Placemark>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        137.650,36.245 137.655,36.245 137.655,36.248 137.650,36.248 137.650,36.245
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+  </Document>
+</kml>

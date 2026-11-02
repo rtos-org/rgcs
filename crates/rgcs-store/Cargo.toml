@@ -1,0 +1,22 @@
+[package]
+name = "rgcs-store"
+description = "SQLite persistence for RGCS: users, sessions, audit log, settings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+rgcs-core = { workspace = true }
+sqlx = { workspace = true }
+argon2 = { workspace = true }
+uuid = { workspace = true }
+time = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }

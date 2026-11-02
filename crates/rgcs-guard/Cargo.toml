@@ -1,0 +1,13 @@
+[package]
+name = "rgcs-guard"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Portable AI-guard detectors and policy: pure, no I/O, no async, no server types"
+
+[dependencies]
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }

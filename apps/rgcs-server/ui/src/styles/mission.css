@@ -1,0 +1,155 @@
+/* Mission planning view (2D subset): app-only additions over the prototype's
+ * .wrow / .wbadge / .rg-wp / .rg-mid / .form / .warnbox classes. */
+.mission-map.tool-add .maplibregl-canvas { cursor: crosshair; }
+.mission-left, .mission-right { z-index: 2; }
+.mission-tools { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 0 12px 10px; }
+.wp-scroll { flex: 1; overflow-y: auto; min-height: 0; padding: 4px 0; position: relative; }
+.wp-empty { padding: 24px 16px; font-size: 12px; line-height: 1.6; text-align: center; }
+.wrow .cmd-label { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; }
+.wbadge { border-radius: 50%; background: rgba(255, 255, 255, 0.08); color: var(--text-2); border-color: rgba(255, 255, 255, 0.3); }
+.wbadge.pos { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+.wbadge.rtl { background: var(--text); color: var(--on-accent); border-color: transparent; }
+.wbadge.roi { background: var(--ok); color: var(--on-accent); border-color: transparent; }
+.wbadge.sel { background: var(--caution); color: var(--on-caution); border-color: #fff; }
+.cmd-palette { position: absolute; left: 0; right: 0; top: 104px; bottom: 0; display: flex; flex-direction: column; border-radius: 0 0 18px 18px; border-left: none; border-right: none; border-bottom: none; z-index: 3; }
+.cmd-palette-body { flex: 1; overflow-y: auto; padding: 8px 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.cmd-btn.pal { height: 46px; padding: 0 10px; gap: 8px; font-size: 12px; }
+.frame-sel { width: 74px; padding: 0 6px; font-weight: 500; font-size: 12px; }
+.item-editor .form .rg-num, .mission-right .form .rg-num { min-width: 0; }
+.summary-grid { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; font-size: 13px; }
+.warnbox .seq { font-family: var(--mono); font-size: 11px; opacity: 0.8; }
+.warnbox .warn-detail { display: block; margin-top: 2px; font-size: 11px; opacity: 0.85; }
+.warnbox.with-fix { align-items: flex-start; }
+.warnbox.with-fix .seq { line-height: 18px; }
+.warnbox .warn-fix { display: flex; margin-top: 6px; }
+.warnbox.fatal { border-color: var(--danger-line); background: var(--danger-tint); color: var(--danger); }
+.mission-dirty { color: var(--caution); border-color: var(--caution-line); }
+.compass { width: 44px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+.compass span { font-size: 10px; font-weight: 600; line-height: 1; color: var(--text-2); }
+.help-btn { width: 40px; height: 40px; z-index: 3; font-weight: 600; font-size: 16px; border: 1px solid var(--line); }
+.help-panel { width: 330px; padding: 12px 14px 14px; z-index: 4; font-size: 12px; }
+.help-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: baseline; }
+.mission-pill { bottom: 60px; display: flex; gap: 18px; padding: 8px 16px; font-size: 13px; z-index: 3; border-radius: 999px; white-space: nowrap; }
+.mission-pill .t3 { margin-right: 6px; }
+.discard-sheet { position: absolute; left: 50%; top: 40%; transform: translateX(-50%); width: 360px; padding: 16px; display: flex; flex-direction: column; gap: 14px; z-index: 30; }
+.ctx-menu { position: fixed; z-index: 30; min-width: 170px; padding: 4px; display: flex; flex-direction: column; }
+.ctx-menu button { text-align: left; background: transparent; border: 0; padding: 7px 10px; border-radius: var(--r-sm); color: var(--text); }
+.ctx-menu button:hover { background: var(--accent-tint); }
+.ctx-menu .danger { color: var(--danger); }
+.mission-picker { padding: 6px 0; list-style: none; margin: 0; max-height: 320px; overflow: auto; }
+.mission-picker li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 14px; cursor: pointer; }
+.mission-picker li:hover { background: var(--accent-tint); }
+.mission-picker .meta { color: var(--text-3); font-size: 11px; }
+.mission-picker li.picker-row { align-items: center; padding: 0 8px 0 0; }
+.mission-picker .picker-open { flex: 1; min-width: 0; display: flex; justify-content: space-between; gap: 10px; padding: 8px 14px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.mission-picker .picker-del { width: 26px; height: 26px; flex: none; color: var(--text-3); }
+.mission-picker .picker-del:hover { color: var(--danger); }
+.picker-ask { display: flex; flex-direction: column; gap: 10px; }
+.multi-note { padding: 14px; color: var(--text-2); display: flex; flex-direction: column; gap: 8px; }
+/* Ops map overlay of the vehicle's mission: small prototype-style dots. */
+.wp-mk { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 11px; background: var(--accent); color: var(--on-accent); border: 2px solid rgba(15, 24, 36, 0.9); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45); }
+.wp-mk.small { width: 18px; height: 18px; font-size: 9px; }
+.wp-mk.current { background: var(--caution); color: var(--on-caution); box-shadow: 0 0 0 4px rgba(242, 181, 68, 0.3), 0 2px 8px rgba(0, 0, 0, 0.45); }
+.mission-progress { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-top: 1px solid var(--line-soft); font-size: 12px; }
+.mission-progress .num { font-family: var(--mono); }
+/* label and value never wrap mid-word */
+.mission-progress .nowrap { white-space: nowrap; }
+.mission-progress .btn { gap: 6px; }
+/* the buttons stay together and drop to their own line when 最初から再実行 does not fit */
+.mission-progress { flex-wrap: wrap; row-gap: 6px; }
+.mission-progress .mp-btns { display: flex; gap: 8px; margin-left: auto; }
+/* 3D editing: the floating badge drags up / down (altitude), the ground foot drags across (position). */
+.mission-map.is-3d .rg-wp .dot, .mission-map.is-3d .rg-wp .chip { cursor: ns-resize; }
+.mission-map.is-3d .rg-wp { touch-action: none; }
+.rg-foot { width: 20px; height: 20px; border-radius: 50%; cursor: move; border: 2px solid transparent; transition: border-color 0.12s; }
+.rg-foot:hover, .rg-foot:active { border-color: var(--accent); background: var(--accent-tint); }
+/* under the badge: where they overlap (low items, ground not loaded yet) a press means altitude */
+.maplibregl-marker:has(.rg-foot) { z-index: 0; }
+/* Shift + drag on the mission map: the selection box */
+.box-select { position: absolute; z-index: 5; pointer-events: none; border: 1.5px dashed var(--accent); background: var(--accent-tint); border-radius: 4px; }
+/* The elevation sheet (200 px over the map bottom) pushes the summary pill above it. */
+.mission-view:has(.elev-sheet) .mission-pill { bottom: calc(60px + 200px + 12px); }
+/* Mission write progress (planner sidebar, detail panel) */
+.transfer-bar { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-2); }
+.transfer-bar .bar { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.transfer-bar .bar > span { display: block; height: 100%; background: var(--accent); transition: width 0.25s; }
+/* Long press on a "+": ready to bend the leg into an arc (NAV_ARC_WAYPOINT) */
+.rg-mid.arc-armed { background: var(--caution); color: var(--on-caution); transform: scale(1.25); cursor: grabbing; }
+/* Mission / Fence / Rally planner tabs and the fence / rally panels */
+.plan-tabs { z-index: 3; height: 40px; width: 300px; }
+.plan-adds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px 12px; }
+.plan-adds .btn.inc { border-color: rgba(95, 211, 155, 0.45); }
+.plan-adds .btn.exc { border-color: var(--danger-line); }
+.plan-armed { display: flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 12px; }
+.plan-row { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+.plan-row.sel { background: var(--accent-tint); }
+.plan-swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.plan-row.inc .plan-swatch { background: rgba(95, 211, 155, 0.35); border: 1.5px solid var(--ok); }
+.plan-row.exc .plan-swatch { background: var(--danger-tint); border: 1.5px solid var(--danger); }
+.plan-io { display: grid; gap: 8px; padding: 10px 12px 12px; font-size: 12px; min-width: 0; }
+.plan-io > * { min-width: 0; overflow-wrap: anywhere; }
+.plan-note { line-height: 1.5; font-size: 11px; }
+.plan-io-btns { display: grid; gap: 8px; }
+.rg-fence-pt { width: 12px; height: 12px; border-radius: 3px; background: #fff; border: 2px solid #141b26; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); cursor: move; }
+.rg-fence-pt.center { border-radius: 50%; }
+.rg-fence-pt.radius { border-radius: 50%; background: var(--caution); cursor: ew-resize; }
+.rg-rally { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; font-weight: 700; font-size: 12px; background: #b06cf0; color: #fff; border: 2px solid rgba(15, 24, 36, 0.9); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45); }
+.rg-rally.static { width: 20px; height: 20px; font-size: 11px; }
+/* outside the mission tab the waypoints stay on the map but do not react */
+.mission-map:not(.tab-mission) .rg-wp, .mission-map:not(.tab-mission) .rg-mid, .mission-map:not(.tab-mission) .rg-foot { pointer-events: none; opacity: 0.75; }
+.plan-altmax { display: grid; gap: 6px; padding: 10px 14px; font-size: 13px; }
+.elev-ceiling { position: absolute; right: 4px; transform: translateY(-120%); font-size: 10px; color: var(--danger); pointer-events: none; }
+/* WP list drag & drop: the drop slot is a line on the row's edge */
+.wrow[draggable='true'] { cursor: grab; }
+.wrow.drop-before { box-shadow: inset 0 2px 0 var(--accent); }
+.wrow.drop-after { box-shadow: inset 0 -2px 0 var(--accent); }
+/* 書き込む機体を選択 sheet */
+.up-sheet { bottom: auto; }
+.up-bulk { gap: 8px; padding: 0 14px 10px; }
+.up-list { list-style: none; margin: 0; padding: 0 8px; overflow: auto; }
+.up-list label { display: flex; align-items: center; gap: 10px; padding: 9px 8px; border-radius: 8px; cursor: pointer; }
+.up-list label:hover { background: var(--accent-tint); }
+.up-list .up-tag { margin-left: auto; font-size: 11px; }
+.up-foot { display: flex; justify-content: flex-end; padding: 12px 14px; }
+/* Planner map: place search + jump to a vehicle (below the compass) */
+.finder { z-index: 4; display: flex; gap: 8px; align-items: flex-start; }
+.finder-btns { display: flex; flex-direction: column; gap: 8px; }
+.finder-btn { width: 40px; height: 40px; display: grid; place-items: center; color: var(--text-2); }
+.finder-btn.on { color: var(--accent); border-color: var(--accent); }
+.finder-panel { width: 300px; padding: 10px; border-radius: var(--r-ctl); list-style: none; margin: 0; }
+.finder-panel input { width: 100%; }
+.finder-note { padding: 8px 4px 2px; font-size: 12px; }
+.finder-list { list-style: none; margin: 6px 0 0; padding: 0; }
+.finder-list button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 7px 8px; border-radius: 8px; text-align: left; background: none; border: 0; color: inherit; cursor: pointer; }
+.finder-list button:hover { background: var(--accent-tint); }
+.finder-list .ell { max-width: 100%; font-size: 11px; }
+/* 「このWPへ行く」: a click on an ops-map mission badge opens a small popover below it. */
+.wp-mk.go { cursor: pointer; }
+.wp-go { position: fixed; z-index: 30; min-width: 200px; max-width: 260px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.wp-go-title { font-weight: 600; color: var(--text); }
+.wp-go-hint { font-size: 11px; line-height: 1.4; }
+.wp-go-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
+/* 「ミッション書込」 sheet: a click selects; the footer button writes after a confirm */
+.mission-picker li.on { background: var(--accent-tint); box-shadow: inset 3px 0 0 var(--accent); }
+.mission-write-foot { padding: 12px; display: grid; }
+.mission-write-foot .btn { gap: 8px; }
+/* the vehicle I/O pair and the export pair */
+.mission-io { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mission-io .btn-lg { padding: 0 8px; }
+/* the palette covers the list completely */
+.cmd-palette { background: var(--base); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* a caution line, not a filled pill */
+.plan-notice { gap: 6px; align-items: flex-start; margin-top: 6px; color: var(--caution); font-size: 12px; }
+.plan-notice .ic { flex: none; margin-top: 1px; }
+/* the panel title keeps one line beside 新規 / 開く / ライブラリに保存 */
+.mission-right .sec > .row .h1 { white-space: nowrap; flex: none; }
+.mission-right .sec > .row .btn-sm { white-space: nowrap; }
+/* the header wraps its buttons below the title instead of clipping ライブラリに保存 */
+.mission-right .sec > .row:first-child { flex-wrap: wrap; row-gap: 6px; }
+.mission-head-btns { gap: 6px; margin-left: auto; }
+/* Map labels switched off in the planner (LabelToggle): a numberless dot keeps its hit area small but grabbable. */
+.labels-no-num .rg-wp .dot { width: 16px; height: 16px; font-size: 0; }
+.labels-no-num .rg-wp.sel .dot { width: 18px; height: 18px; }
+.labels-no-alt .rg-wp .chips { display: none; }
+/* Insert buttons off: waypoints can still be inserted from the command palette or the right-click menu. */
+.labels-no-mid .rg-mid { display: none; }
