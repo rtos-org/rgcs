@@ -128,9 +128,7 @@ Issue とプルリクエストを歓迎します(英語・日本語どちらで�
 
 ## ライセンス
 
-RGCS の著作権は RtoS Co., Ltd.(© 2026)にあります。ライセンスは [GNU Affero General Public License v3.0 以降](LICENSE)で、[RGCS Plugin Exception](LICENSE-EXCEPTION.md) を加えています。[PLUGINS.md](PLUGINS.md) に定めた方法だけで RGCS を使うプラグインは、どのライセンスでも配布できます。
-
-RGCS を改変してネットワーク越しに利用者へ提供する場合、AGPL により、その利用者にソースコードを提供する義務があります。
+RGCS の著作権は RtoS Co., Ltd.(© 2026)にあります。ライセンスは [Mozilla Public License 2.0](LICENSE) です。MPL のコピーレフトはファイル単位で効きます。RGCS を改変して配布する場合、改変したファイル（と RGCS のコードを含む新しいファイル）は MPL で公開し続ける必要がありますが、別のファイルとして組み合わせたソフトウェアは、それ自身のライセンスのままで構いません。[PLUGINS.md](PLUGINS.md) に定めた方法だけで RGCS を使うプラグインは、そういう別個の作品として、どのライセンスでも配布できます。詳しくは [LICENSE-EXCEPTION.md](LICENSE-EXCEPTION.md) を参照してください。
 
 第三者のものは、それぞれのライセンスに従います。
 - UI フォントの IBM Plex Sans JP と IBM Plex Mono(Fontsource から同梱、SIL OFL 1.1)、PDF 帳票用の Noto Sans JP(`assets/fonts`、SIL OFL 1.1)

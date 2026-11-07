@@ -1,8 +1,9 @@
 # RGCS trademark policy
 
 "RGCS" and the RGCS logo are trademarks of RtoS Co., Ltd. This policy explains how you may use
-them. It is separate from the software licence: the GNU AGPL lets you use, modify and share the
-code, but it grants no rights to our names or logos (AGPL section 7(e)). The point of this policy
+them. It is separate from the software licence: the Mozilla Public License 2.0 lets you use,
+modify and share the code, but it grants no rights to our names or logos (MPL-2.0 section 2.3).
+The point of this policy
 is simple: people should be able to tell the official RGCS from other versions.
 
 ## You may, without asking

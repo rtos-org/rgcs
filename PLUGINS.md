@@ -3,10 +3,10 @@
 A plugin adds map overlays and links to RGCS without changing its code. You place a folder holding
 a `plugin.toml` in the server's plugins directory and restart the server.
 
-This file is the **Plugin Interface** that the RGCS Plugin Exception in
+This file is the **Plugin Interface** that the plugin note in
 [`LICENSE-EXCEPTION.md`](LICENSE-EXCEPTION.md) refers to. A plugin that uses RGCS only through
-what is documented here may be distributed under any terms. See the exception for the exact
-conditions.
+what is documented here is a separate work under the Mozilla Public License 2.0 and may be
+distributed under any terms. See the note for the exact conditions.
 
 Plugin format version: **`api = 1`**. Plugins of this version are data only: RGCS never runs code
 from a plugin.

@@ -151,12 +151,11 @@ your contribution always stays available under RGCS's open licence.
 ## License
 
 RGCS is © 2026 RtoS Co., Ltd. It is licensed under the
-[GNU Affero General Public License v3.0 or later](LICENSE), with the
-[RGCS Plugin Exception](LICENSE-EXCEPTION.md): a plugin that uses RGCS only through the interface
-documented in [PLUGINS.md](PLUGINS.md) may use any license.
-
-If you run a modified RGCS for users over a network, the AGPL requires that you offer them its
-source code.
+[Mozilla Public License 2.0](LICENSE). The MPL's copyleft is file-level: if you distribute a
+modified RGCS, the files you changed (and any new files containing RGCS code) must stay available
+under the MPL, while software in separate files, combined with RGCS, keeps its own license. A
+plugin that uses RGCS only through the interface documented in [PLUGINS.md](PLUGINS.md) is such a
+separate work and may use any license: see [LICENSE-EXCEPTION.md](LICENSE-EXCEPTION.md).
 
 Third-party components keep their own licenses:
 - the IBM Plex Sans JP and IBM Plex Mono UI fonts (bundled from Fontsource, SIL OFL 1.1) and the

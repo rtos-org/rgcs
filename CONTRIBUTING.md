@@ -20,8 +20,8 @@ link; agreeing takes a minute and covers your later contributions.
 
 You keep the copyright in your work. You give RtoS Co., Ltd. a licence to use it in RGCS, including
 under other licences, so RtoS can keep developing and supporting the project. RtoS must always
-also keep your contribution available under the licence RGCS used when you contributed (the GNU
-AGPL v3 or later with the RGCS Plugin Exception). The [CLA](CLA.md) has the exact terms.
+also keep your contribution available under the licence RGCS used when you contributed (the
+Mozilla Public License 2.0). The [CLA](CLA.md) has the exact terms.
 
 Plugins do not need the CLA: you publish them yourself, under any licence (see
 [PLUGINS.md](PLUGINS.md)).

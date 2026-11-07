@@ -10,8 +10,8 @@ Agreement may cover more than one software project managed by Us.
 **In short** (not part of the Agreement): you keep the copyright in your contribution and may use
 it however you like. You give RtoS a licence to use it in RGCS, including the right to offer RGCS
 under other licences, such as a commercial licence. In return, RtoS must always **also** keep your
-contribution available under the licence RGCS used when you contributed (the GNU AGPL v3 or later
-with the RGCS Plugin Exception), so the open version can never be taken away.
+contribution available under the licence RGCS used when you contributed (the Mozilla Public
+License 2.0), so the open version can never be taken away.
 
 ## 1. Definitions
 
