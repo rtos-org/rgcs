@@ -31,10 +31,16 @@ test('sign-in gathers the clouds, mounts the app under them and clears into it',
   await expect(clouds).toHaveAttribute('data-phase', 'gather')
   await expect(page.getByRole('button', { name: 'サインイン中…' })).toBeDisabled()
   await expect(page.locator('.shell')).toHaveCount(0)
-  await expect(clouds).toHaveAttribute('data-phase', 'done', { timeout: 5_000 })
+  // The phase machine advances on ticks, and once the app mounts under the
+  // clouds its first paint (the GL map, software-rendered on GPU-less CI
+  // runners) can starve the main thread for seconds. The waits below are
+  // patience for that, not part of what is asserted (phase order and the
+  // shell mounting are); helpers.ts allows the overlay 20 s for the same
+  // reason.
+  await expect(clouds).toHaveAttribute('data-phase', 'done', { timeout: 15_000 })
   await expect(page.locator('.shell')).toHaveCount(1)
-  await expect(clouds).toHaveAttribute('data-phase', 'clear', { timeout: 5_000 })
-  await expect(page.locator('.ls-overlay')).toHaveCount(0, { timeout: 8_000 })
+  await expect(clouds).toHaveAttribute('data-phase', 'clear', { timeout: 20_000 })
+  await expect(page.locator('.ls-overlay')).toHaveCount(0, { timeout: 20_000 })
   await expect(page.locator('header .brand')).toBeVisible()
 })
 

@@ -15,6 +15,11 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: process.env.CI ? 'github' : 'list',
-  use: { baseURL, viewport: { width: 1440, height: 900 }, trace: 'retain-on-failure' },
+  // The suite drives the Japanese UI (helpers fill ユーザー名 / パスワード) and the
+  // app picks its language from navigator.languages, so pin the browser to a
+  // Japanese environment: on an en-US machine (e.g. a stock CI runner) the app
+  // would render in English and every login would time out. The zone is pinned
+  // for the same reason — the UI formats times in the local zone.
+  use: { baseURL, viewport: { width: 1440, height: 900 }, trace: 'retain-on-failure', locale: 'ja-JP', timezoneId: 'Asia/Tokyo' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], ...gpuLaunch } }],
 })
