@@ -39,8 +39,8 @@ PLANE_PARAMS="$ARDUPILOT_DIR/Tools/autotest/models/plane.parm"
 ROVER_BIN="$ARDUPILOT_DIR/build/sitl/bin/ardurover"
 ROVER_PARAMS="$ARDUPILOT_DIR/Tools/autotest/default_params/rover.parm"
 SITL_HOME="${SITL_HOME:-36.2509,137.6385,1505,0}"  # 上高地 (河童橋付近): 3D 地図の確認用
-# The QuadPlane flies from 那智勝浦 (the home of the saved plan nachikatsuura_abso_loiter), not 上高地.
-QUADPLANE_HOME="${QUADPLANE_HOME:-33.6682026,135.9041309,87.36,0}"
+# The QuadPlane gets its own home, ~200 m north of SITL_HOME (override: QUADPLANE_HOME).
+QUADPLANE_HOME="${QUADPLANE_HOME:-36.2527,137.6385,1505,0}"
 SITL_SPEEDUP="${SITL_SPEEDUP:-1}"
 SITL_PORT=5760
 SITL_COUNT="${SITL_COUNT:-1}"
