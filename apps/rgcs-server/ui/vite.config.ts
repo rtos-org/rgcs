@@ -25,6 +25,15 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    // Several component tests render large trees in jsdom and legitimately take
+    // well over vitest's 5 s default on shared CI runners (they are slow, not
+    // hung: the same tests pass unchanged with a larger budget). Keep the limit
+    // finite so a real hang still fails.
+    testTimeout: 30_000,
+    // Fixtures carry JST wall-clock expectations (e.g. epoch 1761400000000 is
+    // "22:46:40 JST") and the components format times in the local zone. Pin
+    // the zone so the suite is deterministic on UTC machines and CI runners.
+    env: { TZ: 'Asia/Tokyo' },
     coverage: { provider: 'v8', reporter: ['text', 'html'], include: ['src/**'], exclude: ['src/shared/api/generated/**', 'src/test/**', 'src/main.tsx'] },
   },
 })
