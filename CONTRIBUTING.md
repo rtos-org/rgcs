@@ -67,3 +67,20 @@ for ArduPilot SITL. Then:
 
 By contributing you agree that your contributions are licensed as described in the CLA, and you
 follow the [trademark policy](TRADEMARKS.md) when you publish forks or services.
+
+## Releases and versioning
+
+RGCS follows [Semantic Versioning 2.0.0](https://semver.org). The version lives in one place:
+the workspace `version` in the root `Cargo.toml`, which every crate inherits. A release is a git
+tag `v<version>` and a GitHub Release whose notes come from `CHANGELOG.md` (kept in the
+[Keep a Changelog](https://keepachangelog.com) format).
+
+- While the version is `0.x`, a minor bump (`0.2.0`) may include breaking changes as well as new
+  features; a patch bump (`0.1.1`) is fixes only. This matches the "early development" status in
+  the README.
+- `1.0.0` is the first version recommended for general field use. From there on, a breaking
+  change needs a major bump.
+- Builds for field trials or SITL only use pre-release suffixes: `0.2.0-alpha.1`, `-beta.1`,
+  `-rc.1`.
+- The Pi package is named `rgcs-pi-<version>.tar.gz` and `rgcs-server --version` prints the same
+  version, so a field report always names the exact build.
