@@ -36,6 +36,15 @@ function setup(opts: { progress?: typeof done; armed?: boolean } = {}) {
     if (url.endsWith('/params')) return ok({ entries, progress: opts.progress ?? done })
     if (url.endsWith('/confirm')) return ok({ confirm_token: 'tok', expires_in: 30 })
     if (url.includes('/api/history/params')) return ok([{ id: 1, ts: '2026-10-18T01:02:03Z', operator: 'admin', sysid: 1, name: 'FENCE_ALT_MAX', old_value: 100, new_value: 150, verified: true }])
+    // The アプリ設定 tab mounts the registry / template / pilot / settings forms.
+    // They must be served real shapes (as in AppTab.test.tsx): the 404 catch-all
+    // below answers success:true with null data, which apiFetch unwraps as a
+    // resolved null — the forms then crash rendering it (templates.map), as an
+    // unhandled error after the test's own assertions have passed.
+    if (url.endsWith('/registry')) return ok({ sysid: 1, name: 'UAV-01', registration: '', uas_type: '', model: '', type_cert_no: '', airworthiness_class: '', airworthiness_no: '', manufacturer: '', serial_no: '', initial_flight_minutes: 0, inspection_template_id: null, endurance_minutes: null, total_flight_minutes: 0 })
+    if (url.endsWith('/inspection/templates')) return ok([])
+    if (url.endsWith('/users/me/pilot')) return ok({ username: 'admin', full_name: '', license_no: '' })
+    if (url.endsWith('/settings/app')) return ok({ lang: 'ja', map_tile_url: 'x', map_attribution: 'y', map: { gimbal_ground_projection: false, track_minutes: 10 }, basemaps: [], mavlink: { gcs_sysid: 255 } })
     return ok(null, 404)
   })
   vi.stubGlobal('fetch', fetchMock)
