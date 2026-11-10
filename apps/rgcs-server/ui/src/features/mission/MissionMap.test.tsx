@@ -1,7 +1,7 @@
 import { act, render, waitFor } from '@testing-library/react'
 import { StrictMode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { created } from '../../test/fakeMaplibre'
+import { created, FakeMap } from '../../test/fakeMaplibre'
 
 vi.mock('maplibre-gl', async () => (await import('../../test/fakeMaplibre')).maplibreModule)
 
@@ -55,6 +55,13 @@ describe('MissionMap', () => {
     created.maps = []
     created.markers = []
     created.deferLoad = false
+  })
+
+  it('passes the configured encoding to the DEM source', () => {
+    const addSource = vi.spyOn(FakeMap.prototype, 'addSource')
+    renderMap({ terrainTiles: 'https://dem/{z}/{x}/{y}.png', terrainEncoding: 'mapbox', mode: '3d' })
+    expect(addSource).toHaveBeenCalledWith('dem', expect.objectContaining({ encoding: 'mapbox', minzoom: 6 }))
+    addSource.mockRestore()
   })
 
   it('3d_can_tilt_down_to_near_the_ground', () => {

@@ -1,14 +1,16 @@
-// Terrarium DEM for the 3D map (prototype TerrainSampler): MapLibre draws the terrain from the
+// DEM for the 3D map (prototype TerrainSampler): MapLibre draws the terrain from the
 // `raster-dem` source; this sampler decodes the same tiles itself so altitudes (vehicle posts,
 // mission path) are known without asking the renderer. A DSM only has to provide `elevAt`.
 import type { RasterDEMSourceSpecification } from 'maplibre-gl'
 import type { ElevAt } from './air'
 
+export type DemEncoding = 'terrarium' | 'mapbox'
+
 const Z = 13
 const SIZE = 256
 
-export function terrainSource(url: string): RasterDEMSourceSpecification {
-  return { type: 'raster-dem', tiles: [url], tileSize: SIZE, encoding: 'terrarium', maxzoom: 15, attribution: 'Terrain: Mapzen / AWS Terrain Tiles' }
+export function terrainSource(url: string, encoding: DemEncoding = 'terrarium'): RasterDEMSourceSpecification {
+  return { type: 'raster-dem', tiles: [url], tileSize: SIZE, encoding, maxzoom: 15, ...(encoding === 'mapbox' ? { minzoom: 6 } : {}), attribution: encoding === 'mapbox' ? 'Terrain: PLATEAU / 国土地理院' : 'Terrain: Mapzen / AWS Terrain Tiles' }
 }
 
 /** Tile index and the fractional pixel position inside it. */
@@ -28,9 +30,15 @@ export function decodeTerrarium(rgba: ArrayLike<number>): Float32Array {
   return out
 }
 
-export type TileLoader = (url: string) => Promise<Float32Array | null>
+export function decodeTerrainRgb(rgba: ArrayLike<number>): Float32Array {
+  const out = new Float32Array(SIZE * SIZE)
+  for (let i = 0; i < out.length; i++) out[i] = -10000 + (rgba[i * 4]! * 65536 + rgba[i * 4 + 1]! * 256 + rgba[i * 4 + 2]!) * 0.1
+  return out
+}
 
-export async function loadTile(url: string): Promise<Float32Array | null> {
+export type TileLoader = (url: string, encoding?: DemEncoding) => Promise<Float32Array | null>
+
+export async function loadTile(url: string, encoding: DemEncoding = 'terrarium'): Promise<Float32Array | null> {
   try {
     const res = await fetch(url)
     if (!res.ok) return null
@@ -41,7 +49,8 @@ export async function loadTile(url: string): Promise<Float32Array | null> {
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return null
     ctx.drawImage(bmp, 0, 0)
-    return decodeTerrarium(ctx.getImageData(0, 0, SIZE, SIZE).data)
+    const rgba = ctx.getImageData(0, 0, SIZE, SIZE).data
+    return encoding === 'mapbox' ? decodeTerrainRgb(rgba) : decodeTerrarium(rgba)
   } catch {
     return null
   }
@@ -60,7 +69,7 @@ function bilinear(t: Float32Array, px: number, py: number): number {
   return e(x0, y0) * (1 - fx) * (1 - fy) + e(x1, y0) * fx * (1 - fy) + e(x0, y1) * (1 - fx) * fy + e(x1, y1) * fx * fy
 }
 
-/** Ground elevation from z13 Terrarium tiles; `onTile` fires when a tile arrives (redraw). */
+/** Ground elevation from z13 DEM tiles; `onTile` fires when a tile arrives (redraw). */
 const RETRY_MS = 30_000
 
 /** A tile that failed: retried no sooner than `RETRY_MS` later (offline sites, LTE). */
@@ -74,11 +83,13 @@ export class TerrainSampler {
   private readonly onTile: () => void
   private readonly load: TileLoader
   private readonly now: () => number
-  constructor(url: string, onTile: () => void, load: TileLoader = loadTile, now: () => number = Date.now) {
+  private readonly encoding: DemEncoding
+  constructor(url: string, onTile: () => void, load: TileLoader = loadTile, now: () => number = Date.now, encoding: DemEncoding = 'terrarium') {
     this.url = url
     this.onTile = onTile
     this.load = load
     this.now = now
+    this.encoding = encoding
   }
 
   readonly elevAt: ElevAt = (lon, lat) => {
@@ -93,7 +104,7 @@ export class TerrainSampler {
   private fetch(key: string, x: number, y: number): void {
     this.tiles.set(key, 'loading')
     const url = this.url.replace('{z}', String(Z)).replace('{x}', String(x)).replace('{y}', String(y))
-    void this.load(url).then((t) => {
+    void this.load(url, this.encoding).then((t) => {
       if (!t) {
         this.tiles.set(key, { failedAt: this.now() })
         return

@@ -2,6 +2,7 @@
 // vehicle, a ground disc, the DOM marker floated to its altitude, the flight tracks in the air and
 // the selected vehicle's mission drawn like the planner (display only).
 import { useEffect, useRef, type RefObject } from 'react'
+import type { DemEncoding } from './terrain'
 import type { FeatureCollection, Point } from 'geojson'
 import type { Map as MlMap, Marker } from 'maplibre-gl'
 import type { Mission, VehicleState } from '../../shared/api/types'
@@ -115,6 +116,7 @@ interface Args {
   readonly loaded: RefObject<boolean>
   readonly mode: MapMode
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly vehicles: ReadonlyMap<number, VehicleState>
   readonly selected: number | null
   readonly homes: ReadonlyMap<number, LatLon>
@@ -155,8 +157,8 @@ export interface OpsAir {
 }
 
 /** Terrain, posts and floated markers; a no-op without terrain tiles. */
-export function useVehicleAir({ map, loaded, mode, terrainTiles, vehicles, selected, homes, tracks, markers, base, mission = null, missionBadges, predicted = null }: Args): OpsAir {
-  const air = useAir3d({ map, loaded, mode, terrainTiles, layerId: AIR, setup: setupGround, modeLayers: OPS_3D_LAYERS, order: orderLayers })
+export function useVehicleAir({ map, loaded, mode, terrainTiles, terrainEncoding = 'terrarium', vehicles, selected, homes, tracks, markers, base, mission = null, missionBadges, predicted = null }: Args): OpsAir {
+  const air = useAir3d({ map, loaded, mode, terrainTiles, terrainEncoding, layerId: AIR, setup: setupGround, modeLayers: OPS_3D_LAYERS, order: orderLayers })
   const { sampler, ready, is3d, tick, layer, models, floats, modeSwitchAt } = air
   // in 3D the model stands for the vehicle: the DOM marker keeps only its name / altitude pill
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Dict } from '../../shared/i18n'
 import { IconClose, IconElevation } from '../../shared/ui/icons'
-import { TerrainSampler } from '../map/terrain'
+import { TerrainSampler, type DemEncoding } from '../map/terrain'
 import { CMDS } from './cmds'
 import { elevProfile, type ProfilePoint } from './elevProfile'
 import { cmdKey, type Draft } from './model'
@@ -33,6 +33,7 @@ interface Props {
   readonly draft: Draft
   readonly selected: ReadonlySet<number>
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   /** FENCE_ALT_MAX (m above home), drawn as a line; null = none. */
   readonly ceiling?: number | null
   readonly dict: Dict
@@ -40,11 +41,11 @@ interface Props {
 }
 
 /** Elevation profile (prototype elevation sheet): toggled by a map button, floats over the map bottom. */
-export function ElevationSheet({ draft, selected, terrainTiles, ceiling = null, dict, onSelect }: Props) {
+export function ElevationSheet({ draft, selected, terrainTiles, terrainEncoding = 'terrarium', ceiling = null, dict, onSelect }: Props) {
   const [open, setOpen] = useState(readOpen)
   const [tick, setTick] = useState(0)
   // The DEM is fetched only while the sheet is open (2D otherwise needs no tiles).
-  const sampler = useMemo(() => (open && terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1)) : null), [open, terrainTiles])
+  const sampler = useMemo(() => (open && terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1), undefined, undefined, terrainEncoding) : null), [open, terrainTiles, terrainEncoding])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const profile = useMemo(() => (open ? elevProfile(draft, sampler ? sampler.elevAt : () => null, ceiling) : null), [open, draft, sampler, tick, ceiling])
   const toggle = () => {

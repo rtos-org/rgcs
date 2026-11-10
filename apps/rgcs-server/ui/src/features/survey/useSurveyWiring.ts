@@ -2,6 +2,7 @@
 // area is drawn, the KML file input, the camera list (fetched the first time it is needed), and the
 // one survey editor the panel and the map share (map drags preview in both).
 import { useEffect, useMemo, useRef, useState } from 'react'
+import type { DemEncoding } from '../map/terrain'
 import type { SurveyCamera, VehicleKind } from '../../shared/api/types'
 import { SURVEY_KEY, SURVEY_KML_KEY } from '../mission/cmds'
 import type { LatLon } from '../mission/geo'
@@ -30,6 +31,7 @@ interface Args {
   /** Frames a polygon read from KML. */
   readonly onFit: (points: readonly LatLon[]) => void
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly predict?: (d: Draft) => Predicted | null
 }
 
@@ -50,11 +52,11 @@ function useLazyCameras() {
   return { cameras, load }
 }
 
-type MapSideArgs = Pick<Args, 'draft' | 'change' | 'home' | 'params' | 'terrainTiles' | 'predict' | 'tab'>
+type MapSideArgs = Pick<Args, 'draft' | 'change' | 'home' | 'params' | 'terrainTiles' | 'terrainEncoding' | 'predict' | 'tab'>
 
 /** The shared survey editor, the draft the map shows (a drag preview applied), the map's survey props and the footprint button. */
-function useMapSide({ draft, change, home, params, terrainTiles, predict, tab }: MapSideArgs) {
-  const editor = useSurveyEditor({ draft, change, home, terrainTiles, vehicleParams: params, predict })
+function useMapSide({ draft, change, home, params, terrainTiles, terrainEncoding = 'terrarium', predict, tab }: MapSideArgs) {
+  const editor = useSurveyEditor({ draft, change, home, terrainTiles, terrainEncoding, vehicleParams: params, predict })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const mapDraft = useMemo(() => previewDraft(draft, editor), [draft, editor.preview])
   const foot = useFootToggle()
@@ -72,7 +74,7 @@ function useMapSide({ draft, change, home, params, terrainTiles, predict, tab }:
   return { editor, mapDraft, mapSurvey, footButton, previewing }
 }
 
-export function useSurveyWiring({ store, draft, change, afterUid, home, kind, params, tab, onFit, terrainTiles, predict }: Args) {
+export function useSurveyWiring({ store, draft, change, afterUid, home, kind, params, tab, onFit, terrainTiles, terrainEncoding = 'terrarium', predict }: Args) {
   const cams = useLazyCameras()
   const kmlInput = useRef<HTMLInputElement>(null)
   const select = (uid: number) => store.update((u) => selectOne(u, uid, false))
@@ -106,7 +108,7 @@ export function useSurveyWiring({ store, draft, change, afterUid, home, kind, pa
   }
   const mapDraw: SurveyDrawMap | null = draw.drawing ? { ring: draw.drawing, onClick: (lat, lon) => draw.addVertex({ lat, lon }), onClose: draw.finish, onMove: (i, lat, lon) => draw.moveVertex(i, { lat, lon }) } : null
 
-  const side = useMapSide({ draft, change, home, params, terrainTiles, predict, tab })
+  const side = useMapSide({ draft, change, home, params, terrainTiles, terrainEncoding, predict, tab })
 
   return { ...side, onPalette, onKey, mapDraw, slot: { drawing: draw.drawing, error: draw.error, onFinish: draw.finish, onCancel: draw.cancel, onDismiss: draw.dismissError, kmlInput, onKml } }
 }

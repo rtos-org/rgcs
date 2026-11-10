@@ -1,4 +1,5 @@
 import type { StyleSpecification } from 'maplibre-gl'
+import type { DemEncoding } from '../map/terrain'
 import { useMemo, useRef, useState } from 'react'
 import type { Mission, MissionFrame, VehicleState } from '../../shared/api/types'
 import type { Dict } from '../../shared/i18n'
@@ -64,8 +65,9 @@ interface Props {
   readonly basemap?: Basemap
   readonly basemaps?: readonly Basemap[]
   readonly onPickBasemap?: (id: string) => void
-  /** Terrarium DEM tiles; `null` / absent → 2D only. */
+  /** DEM tiles; `null` / absent → 2D only. */
   readonly terrainTiles?: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly store?: MissionStore
   readonly plans?: PlanSetStore
   /** Which map labels show (tests pass their own store). */
@@ -78,7 +80,7 @@ const NUDGE = 0.0001
 const NO_TRANSFERS: ReadonlyMap<number, MissionTransfer> = new Map()
 
 /** The mission planning screen (2D subset) built on the Glass prototype's layout. */
-export function MissionView({ vehicles, transfers = NO_TRANSFERS, dict, style, basemap, basemaps = [], onPickBasemap, terrainTiles = null, store = missionStore, plans = planSetStore, labels, opsSelected = null }: Props) {
+export function MissionView({ vehicles, transfers = NO_TRANSFERS, dict, style, basemap, basemaps = [], onPickBasemap, terrainTiles = null, terrainEncoding = 'terrarium', store = missionStore, plans = planSetStore, labels, opsSelected = null }: Props) {
   const mapMode = useMapMode()
   const is3d = mapMode === '3d' && terrainTiles !== null
   const ui = useMissionUi(store)
@@ -132,7 +134,7 @@ export function MissionView({ vehicles, transfers = NO_TRANSFERS, dict, style, b
   const planIo = { sysid, targetName: vehicle?.name, busy: plan.busy, status: plan.status, dict, onWrite: plan.write, onRead: plan.read, onSaveFile: plan.saveFile, onLoadFile: (f: File) => void plan.loadFile(f), onCollapse: panel.collapse }
   const selectedItems = draft.items.filter((it) => ui.selected.has(it.uid))
   const lastSelected = selectedItems[selectedItems.length - 1]
-  const sv = useSurveyWiring({ store, draft, change, afterUid: lastSelected?.uid ?? null, home: fileHome, kind, params: pathValues, tab: plan.tab, onFit, terrainTiles, predict })
+  const sv = useSurveyWiring({ store, draft, change, afterUid: lastSelected?.uid ?? null, home: fileHome, kind, params: pathValues, tab: plan.tab, onFit, terrainTiles, terrainEncoding, predict })
   const st = stats(draft.items, draft.mission.home, draft.mission.speed)
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -180,6 +182,7 @@ export function MissionView({ vehicles, transfers = NO_TRANSFERS, dict, style, b
         basemap={basemap}
         mode={mapMode}
         terrainTiles={terrainTiles}
+        terrainEncoding={terrainEncoding}
         vehicle={vehicle}
         predict={predict}
         fitRequest={io.fitRequest}
@@ -221,7 +224,7 @@ export function MissionView({ vehicles, transfers = NO_TRANSFERS, dict, style, b
       {ui.busy === 'idle' && <ModeSwitch on={board.on} dict={dict} onChange={board.setOn} />}
       {editing && <PlanTabs tab={plan.tab} dict={dict} onChange={plan.setTab} />}
       {board.on && <AssignBoard vehicles={list} openRows={openPlans.list.workspace.rows} dict={dict} onOverlay={board.onOverlay} onFit={onFit} onWrite={batch.open} />}
-      {editing && <ElevationSheet draft={placed} selected={ui.selected} terrainTiles={terrainTiles} ceiling={plan.fenceParams?.alt_max ?? null} dict={dict} onSelect={(uid, additive, range) => store.update((u) => (range ? selectRange(u, uid) : selectOne(u, uid, additive)))} />}
+      {editing && <ElevationSheet draft={placed} selected={ui.selected} terrainTiles={terrainTiles} terrainEncoding={terrainEncoding} ceiling={plan.fenceParams?.alt_max ?? null} dict={dict} onSelect={(uid, additive, range) => store.update((u) => (range ? selectRange(u, uid) : selectOne(u, uid, additive)))} />}
       <button type="button" className={`g-ctl ctl float map-r2 top1 help-btn${help ? ' on' : ''}`} title={dict.mHelpTitle} aria-label={dict.mHelpTitle} onClick={() => setHelp((h) => !h)}>
         ?
       </button>

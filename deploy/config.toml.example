@@ -30,8 +30,11 @@ role = "standalone"
 # map_tile_url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 # map_attribution = "© OpenStreetMap contributors"
 
-# Terrarium DEM tiles for the 3D map; "" turns 3D off (offline sites)
-# terrain_tiles = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+# PLATEAU Terrain-RGB DEM tiles for the 3D map (default); "" turns 3D off (offline sites)
+# terrain_tiles = "https://api.plateauview.mlit.go.jp/tiles/plateau-terrainrgb/{z}/{x}/{y}.png"
+# Optional encoding override: "mapbox" or "terrarium". Unset/invalid values infer
+# "mapbox" for the built-in PLATEAU URL, otherwise "terrarium" (existing custom sources).
+# terrain_encoding = "mapbox"
 
 # Plugins (map overlays, links): <plugins_dir>/<id>/plugin.toml, read at start (see PLUGINS.md)
 # plugins_dir = "/var/lib/rgcs/plugins"   # default: <data_dir>/plugins

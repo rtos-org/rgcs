@@ -66,9 +66,9 @@ fn basemap(
     }
 }
 
-/// Terrarium-encoded DEM tiles for the 3D map (AWS Terrain Tiles).
+/// Terrain-RGB DEM tiles for the 3D map (PLATEAU).
 pub const DEFAULT_TERRAIN_TILES: &str =
-    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+    "https://api.plateauview.mlit.go.jp/tiles/plateau-terrainrgb/{z}/{x}/{y}.png";
 
 /// The start error for a config that still sets the removed docomo key.
 const REMOVED_LTE_TILE_URL: &str = "`lte_tile_url` was removed: tile overlays are plugins now. \
@@ -95,8 +95,10 @@ pub struct Config {
     pub log_fetch: LogFetch,
     /// Base maps offered in the map picker; empty → the defaults of [`Config::basemaps`].
     pub basemaps: Vec<Basemap>,
-    /// Terrarium DEM tile template for the 3D map; `""` turns 3D off (offline sites).
+    /// DEM tile template for the 3D map; `""` turns 3D off (offline sites).
     pub terrain_tiles: String,
+    /// Optional DEM encoding override; unknown values fall back to URL inference.
+    pub terrain_encoding: Option<String>,
     /// Plugin directories (`<id>/plugin.toml`), read at start; `None` → `<data_dir>/plugins`.
     pub plugins_dir: Option<PathBuf>,
     /// AI chat provider; absent → disabled.
@@ -167,6 +169,7 @@ impl Default for Config {
             log_fetch: LogFetch::Auto,
             basemaps: Vec::new(),
             terrain_tiles: DEFAULT_TERRAIN_TILES.into(),
+            terrain_encoding: None,
             plugins_dir: None,
             ai: rgcs_ai::AiConfig::default(),
             env: EnvConfig::default(),
@@ -245,6 +248,16 @@ impl Config {
         (!url.is_empty()).then(|| url.to_string())
     }
 
+    /// Explicit encoding wins; the built-in PLATEAU URL uses Terrain-RGB, other URLs Terrarium.
+    pub fn terrain_encoding(&self) -> &'static str {
+        match self.terrain_encoding.as_deref() {
+            Some("mapbox") => "mapbox",
+            Some("terrarium") => "terrarium",
+            _ if self.terrain_tiles.trim() == DEFAULT_TERRAIN_TILES => "mapbox",
+            _ => "terrarium",
+        }
+    }
+
     /// Missing file → defaults; unreadable or invalid file → error.
     pub fn load(path: &Path) -> anyhow::Result<Self> {
         match std::fs::read_to_string(path) {
@@ -261,13 +274,51 @@ mod tests {
 
     #[test]
     fn terrain_tiles_default_and_disable() {
+        let c = Config::parse("").unwrap();
         assert_eq!(
-            Config::default().terrain().as_deref(),
-            Some(DEFAULT_TERRAIN_TILES)
+            c.terrain().as_deref(),
+            Some("https://api.plateauview.mlit.go.jp/tiles/plateau-terrainrgb/{z}/{x}/{y}.png")
         );
-        assert_eq!(Config::parse("terrain_tiles = ''").unwrap().terrain(), None);
+        assert_eq!(c.terrain_encoding(), "mapbox");
+        let c = Config::parse("terrain_tiles = ''").unwrap();
+        assert_eq!(c.terrain(), None);
+        assert_eq!(c.terrain_encoding(), "terrarium");
         let c = Config::parse("terrain_tiles = 'https://dem.local/{z}/{x}/{y}.png'").unwrap();
         assert_eq!(c.terrain().as_deref(), Some("https://dem.local/{z}/{x}/{y}.png"));
+    }
+
+    #[test]
+    fn terrain_encoding_infers_from_the_resolved_url() {
+        let aws = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+        let c = Config::parse(&format!("terrain_tiles = '{aws}'")).unwrap();
+        assert_eq!(c.terrain().as_deref(), Some(aws));
+        assert_eq!(c.terrain_encoding(), "terrarium");
+        let c = Config::parse(&format!("terrain_tiles = '  {DEFAULT_TERRAIN_TILES}  '")).unwrap();
+        assert_eq!(c.terrain().as_deref(), Some(DEFAULT_TERRAIN_TILES));
+        assert_eq!(c.terrain_encoding(), "mapbox");
+    }
+
+    #[test]
+    fn terrain_encoding_override_and_invalid_fallback() {
+        for (text, expected) in [
+            (
+                "terrain_tiles = 'https://dem.local/{z}/{x}/{y}.png'\nterrain_encoding = 'mapbox'",
+                "mapbox",
+            ),
+            ("terrain_encoding = 'terrarium'", "terrarium"),
+            ("terrain_encoding = 'invalid'", "mapbox"),
+            (
+                "terrain_tiles = 'https://dem.local/{z}/{x}/{y}.png'\nterrain_encoding = 'invalid'",
+                "terrarium",
+            ),
+            ("terrain_tiles = ''\nterrain_encoding = 'mapbox'", "mapbox"),
+        ] {
+            assert_eq!(
+                Config::parse(text).unwrap().terrain_encoding(),
+                expected,
+                "{text}"
+            );
+        }
     }
 
     #[test]

@@ -5,6 +5,10 @@ import type { MavlinkSettings } from "./MavlinkSettings";
 
 export type AppSettings = { lang: string, map_tile_url: string, map_attribution: string, map: MapSettings, basemaps: Array<Basemap>, 
 /**
- * Terrarium DEM tile template for the 3D map; `null` when 3D is off.
+ * DEM tile template for the 3D map; `null` when 3D is off.
  */
-terrain_tiles: string | null, mavlink: MavlinkSettings, };
+terrain_tiles: string | null, 
+/**
+ * Resolved DEM encoding: `mapbox` or `terrarium`, even when 3D is off.
+ */
+terrain_encoding: string, mavlink: MavlinkSettings, };

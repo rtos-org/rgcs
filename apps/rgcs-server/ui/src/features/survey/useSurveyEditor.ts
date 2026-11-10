@@ -1,7 +1,7 @@
 // The one survey editor of the mission screen, shared by the panel (fields) and the map (vertex and
 // rotate drags): a drag in either previews in both, and its release is one undo step.
 import { useMemo, useState } from 'react'
-import { TerrainSampler } from '../map/terrain'
+import { TerrainSampler, type DemEncoding } from '../map/terrain'
 import type { LatLon } from '../mission/geo'
 import type { Predicted } from '../mission/missionAir'
 import type { Draft } from '../mission/model'
@@ -13,8 +13,9 @@ export interface SurveyContext {
   /** Commits one undo step. */
   readonly change: (fn: (d: Draft) => Draft) => void
   readonly home: LatLon | null
-  /** Terrarium DEM tiles for the ground range; null = no terrain. */
+  /** DEM tiles for the ground range; null = no terrain. */
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   /** The connected vehicle's parameters (ROLL_LIMIT_DEG shown beside the bank). */
   readonly vehicleParams: ReadonlyMap<string, number>
   readonly predict?: (d: Draft) => Predicted | null
@@ -23,14 +24,14 @@ export interface SurveyContext {
 export type SurveyEditor = ReturnType<typeof useSurvey>
 
 /** The DEM sampler (same source as the elevation sheet) and a counter that bumps as tiles arrive. */
-function useTerrain(terrainTiles: string | null) {
+function useTerrain(terrainTiles: string | null, terrainEncoding: DemEncoding) {
   const [tick, setTick] = useState(0)
-  const sampler = useMemo(() => (terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1)) : null), [terrainTiles])
+  const sampler = useMemo(() => (terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1), undefined, undefined, terrainEncoding) : null), [terrainTiles, terrainEncoding])
   return { elevAt: sampler ? sampler.elevAt : null, tick }
 }
 
-export function useSurveyEditor({ draft, change, home, terrainTiles, vehicleParams, predict }: SurveyContext & { readonly draft: Draft }): SurveyEditor {
-  const terrain = useTerrain(terrainTiles)
+export function useSurveyEditor({ draft, change, home, terrainTiles, terrainEncoding = 'terrarium', vehicleParams, predict }: SurveyContext & { readonly draft: Draft }): SurveyEditor {
+  const terrain = useTerrain(terrainTiles, terrainEncoding)
   return useSurvey({ draft, change, home, elevAt: terrain.elevAt, vehicleParams, predict, terrainTick: terrain.tick })
 }
 

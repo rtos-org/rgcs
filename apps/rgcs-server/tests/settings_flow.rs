@@ -264,8 +264,22 @@ async fn app_settings_include_the_terrain_tiles() {
     assert_eq!(status, StatusCode::OK, "{body}");
     assert_eq!(
         body["data"]["terrain_tiles"],
-        "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+        "https://api.plateauview.mlit.go.jp/tiles/plateau-terrainrgb/{z}/{x}/{y}.png"
     );
+    assert_eq!(body["data"]["terrain_encoding"], "mapbox");
+}
+
+#[tokio::test]
+async fn app_settings_include_custom_and_disabled_terrain_encoding() {
+    let (_, state) = spawn_app().await;
+    for tiles in [Some("https://dem.local/{z}/{x}/{y}.png".to_string()), None] {
+        let app = rgcs_server::app::build(state.clone().with_terrain(tiles.clone(), "mapbox"), None);
+        let cookie = login(&app).await;
+        let (status, body, _) = call(&app, req(Method::GET, "/api/settings/app", Some(&cookie), None)).await;
+        assert_eq!(status, StatusCode::OK, "{body}");
+        assert_eq!(body["data"]["terrain_tiles"], serde_json::json!(tiles));
+        assert_eq!(body["data"]["terrain_encoding"], "mapbox");
+    }
 }
 
 #[tokio::test]

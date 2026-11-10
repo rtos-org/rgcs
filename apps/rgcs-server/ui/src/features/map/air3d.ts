@@ -6,13 +6,14 @@ import { AirPathLayer } from './airLayer'
 import { VehicleModelLayer } from './models/modelLayer'
 import { floatMarkers, sameMatrix, type Floating } from './float'
 import { applyMapMode, DEM_SOURCE, type MapMode, type ModeLayers } from './mapMode'
-import { TerrainSampler, terrainSource } from './terrain'
+import { TerrainSampler, terrainSource, type DemEncoding } from './terrain'
 
 interface Args {
   readonly map: RefObject<MlMap | null>
   readonly loaded: RefObject<boolean>
   readonly mode: MapMode
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly layerId: string
   /** Adds the map's own 3D layers (called once, after the DEM source; the air layer comes last). */
   readonly setup: (m: MlMap) => void
@@ -64,10 +65,10 @@ function floatFrame(m: MlMap, mx: ArrayLike<number>, { floats, live, floated }: 
 /** The 2D / 3D camera animation (applyMapMode) plus a margin. */
 export const MODE_EASE_MS = 950
 
-export function useAir3d({ map, loaded, mode, terrainTiles, layerId, setup, modeLayers, order }: Args): Air3d {
+export function useAir3d({ map, loaded, mode, terrainTiles, terrainEncoding = 'terrarium', layerId, setup, modeLayers, order }: Args): Air3d {
   const [tick, setTick] = useState(0)
   const [ready, setReady] = useState(false)
-  const sampler = useMemo(() => (terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1)) : null), [terrainTiles])
+  const sampler = useMemo(() => (terrainTiles ? new TerrainSampler(terrainTiles, () => setTick((n) => n + 1), undefined, undefined, terrainEncoding) : null), [terrainTiles, terrainEncoding])
   const layer = useRef(new AirPathLayer(layerId)).current
   const models = useRef(new VehicleModelLayer(`${layerId}-models`)).current
   const floats = useRef<readonly Floating[]>([])
@@ -85,7 +86,7 @@ export function useAir3d({ map, loaded, mode, terrainTiles, layerId, setup, mode
     const m = map.current
     if (!m || !terrainTiles) return
     const go = () => {
-      m.addSource(DEM_SOURCE, terrainSource(terrainTiles))
+      m.addSource(DEM_SOURCE, terrainSource(terrainTiles, terrainEncoding))
       setupRef.current.setup(m)
       m.addLayer(layer)
       m.addLayer(models)
@@ -98,7 +99,7 @@ export function useAir3d({ map, loaded, mode, terrainTiles, layerId, setup, mode
     }
     if (loaded.current) go()
     else m.once('load', go)
-  }, [map, loaded, terrainTiles, layer, models])
+  }, [map, loaded, terrainTiles, terrainEncoding, layer, models])
 
   useEffect(() => {
     const m = map.current
