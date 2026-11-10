@@ -188,6 +188,13 @@ describe('MapView', () => {
     created.deferLoad = false
   })
 
+  it('passes the configured encoding to the DEM source', () => {
+    const addSource = vi.spyOn(FakeMap.prototype, 'addSource')
+    render(<MapView vehicles={new Map()} tracks={new Map()} follow={null} selected={null} padding={pad} style={style} target={null} onDragStart={() => {}} onClick={() => {}} terrainTiles="https://dem/{z}/{x}/{y}.png" terrainEncoding="mapbox" mode="3d" />)
+    expect(addSource).toHaveBeenCalledWith('dem', expect.objectContaining({ encoding: 'mapbox', minzoom: 6 }))
+    addSource.mockRestore()
+  })
+
   it('3d_can_tilt_down_to_near_the_ground', () => {
     render(<MapView vehicles={new Map()} tracks={new Map()} follow={null} selected={null} padding={pad} style={style} onDragStart={() => {}} onClick={() => {}} target={null} mission={null} missionCurrent={null} />)
     expect((created.maps[0]!.options as { maxPitch?: number }).maxPitch).toBe(85)

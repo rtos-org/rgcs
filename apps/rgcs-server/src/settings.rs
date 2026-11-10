@@ -42,8 +42,10 @@ pub struct AppSettings {
     pub map_attribution: String,
     pub map: MapSettings,
     pub basemaps: Vec<crate::config::Basemap>,
-    /// Terrarium DEM tile template for the 3D map; `null` when 3D is off.
+    /// DEM tile template for the 3D map; `null` when 3D is off.
     pub terrain_tiles: Option<String>,
+    /// Resolved DEM encoding: `mapbox` or `terrarium`, even when 3D is off.
+    pub terrain_encoding: String,
     pub mavlink: MavlinkSettings,
 }
 
@@ -96,6 +98,7 @@ async fn current(app: &AppState) -> rgcs_store::Result<AppSettings> {
         },
         basemaps: app.basemaps.clone(),
         terrain_tiles: app.terrain_tiles.clone(),
+        terrain_encoding: app.terrain_encoding.clone(),
         mavlink: MavlinkSettings {
             gcs_sysid: app.gcs.get(),
         },

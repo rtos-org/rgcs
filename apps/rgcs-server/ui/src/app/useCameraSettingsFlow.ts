@@ -1,5 +1,6 @@
 // Camera settings sheet flow: load profile + ROI on open, save in order, 地図で指定.
 import { useEffect, useRef, useState } from 'react'
+import type { DemEncoding } from '../features/map/terrain'
 import type { CameraProfile, CameraState, GimbalInputProfile, RoiControl, RoiTarget, VehicleState } from '../shared/api/types'
 import { getCameraProfile, putCameraProfile, sendCameraCommand } from '../features/camera/api'
 import { cameraErrorText } from '../features/camera/mediaFormat'
@@ -25,6 +26,7 @@ interface Deps {
   readonly modal: Modal
   readonly setModal: (m: Modal) => void
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly vehicles: ReadonlyMap<number, VehicleState>
   readonly setGimbalProfile: (p: GimbalInputProfile) => void
   /** Translates a refused camera command (e.g. `encoding_rejected`) for the log. */
@@ -112,7 +114,7 @@ function useSettingsData(modal: Modal): { profile: CameraProfile | null; roi: Ro
   return data
 }
 
-export function useCameraSettingsFlow({ modal, setModal, terrainTiles, vehicles, setGimbalProfile, dict }: Deps): CameraSettingsFlow {
+export function useCameraSettingsFlow({ modal, setModal, terrainTiles, terrainEncoding = 'terrarium', vehicles, setGimbalProfile, dict }: Deps): CameraSettingsFlow {
   const { profile, roi } = useSettingsData(modal)
   const [draft, setDraft] = useState<SheetDraft | null>(null)
   const [elevationFallback, setElevationFallback] = useState(false)
@@ -154,7 +156,7 @@ export function useCameraSettingsFlow({ modal, setModal, terrainTiles, vehicles,
     if (pick === null) return
     pending.current = null
     mapUiStore.update(cancelMapPick)
-    const ground = await groundElevation(terrainTiles, p.lon, p.lat)
+    const ground = await groundElevation(terrainTiles, p.lon, p.lat, { terrainEncoding })
     const alt = ground ?? vehicles.get(pick.sysid)?.home?.alt ?? 0
     setPicking(false)
     reopen(pick.sysid, { ...pick.draft, roiTargets: pickInto(pick.draft.roiTargets, pick.slot, { lat: p.lat, lon: p.lon, alt }) })

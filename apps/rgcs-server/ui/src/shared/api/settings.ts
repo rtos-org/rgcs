@@ -9,6 +9,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   map: { gimbal_ground_projection: false, track_minutes: 10 },
   mavlink: { gcs_sysid: 255 },
   terrain_tiles: null,
+  terrain_encoding: 'terrarium',
   basemaps: [{ id: 'map', label: '地図', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], attribution: '© OpenStreetMap contributors', max_zoom: 19, overlay: null }],
 }
 

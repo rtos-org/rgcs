@@ -2,6 +2,7 @@
 // its climb angle (steep climbs turn red), a post per positioned item (amber when selected), ground discs, and the altitude of
 // every badge and mid-leg handle so the DOM markers can float to it; survey outlines draped on the ground.
 import { useEffect, useRef, type RefObject } from 'react'
+import type { DemEncoding } from '../map/terrain'
 import type { FeatureCollection, Point } from 'geojson'
 import type { Map as MlMap, Marker } from 'maplibre-gl'
 import { climbColor, climbTint, itemAmsl, mercatorLine, vehicleAmsl, type AirPoint, type AirVertex, type ElevAt, type Rgb } from '../map/air'
@@ -225,6 +226,7 @@ interface Args {
   readonly loaded: RefObject<boolean>
   readonly mode: MapMode
   readonly terrainTiles: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly draft: Draft
   readonly selected: ReadonlySet<number>
   readonly badges: RefObject<Badges>
@@ -265,8 +267,8 @@ export interface MissionAir3d {
   readonly floatVehicle: (marker: Marker | null, v: VehicleState | null, base: readonly [number, number]) => void
 }
 
-export function useMissionAir({ map, loaded, mode, terrainTiles, draft, selected, badges, handles, ceiling = null, vehicleHome = null, predicted = null, others = NO_OTHERS, color = null }: Args): MissionAir3d {
-  const { sampler, ready, is3d, tick, layer, models, floats, live, matrix } = useAir3d({ map, loaded, mode, terrainTiles, layerId: AIR, setup, modeLayers: MISSION_3D_LAYERS })
+export function useMissionAir({ map, loaded, mode, terrainTiles, terrainEncoding = 'terrarium', draft, selected, badges, handles, ceiling = null, vehicleHome = null, predicted = null, others = NO_OTHERS, color = null }: Args): MissionAir3d {
+  const { sampler, ready, is3d, tick, layer, models, floats, live, matrix } = useAir3d({ map, loaded, mode, terrainTiles, terrainEncoding, layerId: AIR, setup, modeLayers: MISSION_3D_LAYERS })
   const latest = useRef({ draft, alts: new Map<number, number | null>() as ReadonlyMap<number, number | null> })
   // the vehicle's home matters only as the fence ceiling's base under a plan with no home or items: a
   // vehicle without a home reports its position here, which must not rebuild the plan every update

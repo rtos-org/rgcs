@@ -13,6 +13,12 @@ describe('groundElevation', () => {
     expect(load.mock.calls[0]?.[0]).toMatch(/^https:\/\/t\/13\/\d+\/\d+\.png$/)
   })
 
+  it('uses the requested DEM encoding for the sample', async () => {
+    const load = vi.fn(async () => flat(1505.8))
+    await expect(groundElevation('https://t/{z}/{x}/{y}.png', 137.6385, 36.2509, { load, terrainEncoding: 'mapbox' })).resolves.toBeCloseTo(1505.8)
+    expect(load).toHaveBeenCalledWith(expect.any(String), 'mapbox')
+  })
+
   it('resolves null after the timeout when the tile does not load', async () => {
     vi.useFakeTimers()
     const p = groundElevation('https://t/{z}/{x}/{y}.png', 138.46829, 35.469883, { timeoutMs: 3000, load: () => Promise.resolve(null) })

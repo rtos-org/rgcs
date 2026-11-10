@@ -172,7 +172,7 @@ export function Shell({ me, lang }: Props) {
       }),
     [],
   )
-  const settingsFlow = useCameraSettingsFlow({ modal, setModal, terrainTiles: settings?.terrain_tiles ?? null, vehicles, setGimbalProfile, dict })
+  const settingsFlow = useCameraSettingsFlow({ modal, setModal, terrainTiles: settings?.terrain_tiles ?? null, terrainEncoding: settings?.terrain_encoding === 'mapbox' ? 'mapbox' : 'terrarium', vehicles, setGimbalProfile, dict })
   useGimbalJoystick(
     current,
     gimbalProfile,
@@ -251,6 +251,7 @@ export function Shell({ me, lang }: Props) {
               basemaps={settings.basemaps}
               onPickBasemap={saveBasemapChoice}
               terrainTiles={settings.terrain_tiles}
+              terrainEncoding={settings.terrain_encoding === 'mapbox' ? 'mapbox' : 'terrarium'}
               opsSelected={selected}
             />
             {logDock}
@@ -274,6 +275,7 @@ export function Shell({ me, lang }: Props) {
               basemap={basemap ?? undefined}
               mode={mapMode}
               terrainTiles={settings.terrain_tiles}
+              terrainEncoding={settings.terrain_encoding === 'mapbox' ? 'mapbox' : 'terrarium'}
               target={mapUi.target}
               focus={mapUi.focus}
               arrival={arrival}

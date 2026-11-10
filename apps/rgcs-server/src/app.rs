@@ -88,8 +88,9 @@ pub struct AppState {
     pub map_attribution: String,
     /// Base maps for the picker (config `[[basemaps]]` or the defaults).
     pub basemaps: Vec<crate::config::Basemap>,
-    /// Terrarium DEM tiles for the 3D map; `None` turns 3D off.
+    /// DEM tiles for the 3D map; `None` turns 3D off.
     pub terrain_tiles: Option<String>,
+    pub terrain_encoding: String,
     /// Fetches the tiles of plugin `area` overlays (shared limits across every plugin).
     pub overlay_fetcher: crate::overlay_fetch::OverlayFetcher,
     /// Plugins read from `plugins_dir` at start; none until `with_plugins`.
@@ -172,6 +173,7 @@ impl AppState {
             map_attribution: crate::config::Config::default().map_attribution,
             basemaps: crate::config::Config::default().basemaps(),
             terrain_tiles: crate::config::Config::default().terrain(),
+            terrain_encoding: crate::config::Config::default().terrain_encoding().into(),
             overlay_fetcher: crate::overlay_fetch::OverlayFetcher::default(),
             plugins: crate::plugins::PluginRegistry::default(),
             started: Instant::now(),
@@ -290,9 +292,10 @@ impl AppState {
         Self { basemaps, ..self }
     }
 
-    pub fn with_terrain(self, terrain_tiles: Option<String>) -> Self {
+    pub fn with_terrain(self, terrain_tiles: Option<String>, terrain_encoding: &str) -> Self {
         Self {
             terrain_tiles,
+            terrain_encoding: terrain_encoding.into(),
             ..self
         }
     }

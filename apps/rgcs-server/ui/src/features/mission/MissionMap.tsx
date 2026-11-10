@@ -1,4 +1,5 @@
 import maplibregl, { type ExpressionSpecification, type Map as MlMap, type Marker, type StyleSpecification } from 'maplibre-gl'
+import type { DemEncoding } from '../map/terrain'
 import type { FeatureCollection } from 'geojson'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { VehicleState } from '../../shared/api/types'
@@ -36,6 +37,7 @@ interface Props {
   /** 2D / 3D; 3D needs `terrainTiles`. */
   readonly mode?: MapMode
   readonly terrainTiles?: string | null
+  readonly terrainEncoding?: DemEncoding
   readonly vehicle: VehicleState | null
   /** Bump to fit the view to the mission (after loading / importing). */
   readonly fitRequest: number
@@ -102,7 +104,7 @@ interface Badge {
   readonly el: HTMLDivElement
 }
 
-type Callbacks = Omit<Props, 'draft' | 'selected' | 'tool' | 'style' | 'basemap' | 'vehicle' | 'fitRequest' | 'mode' | 'terrainTiles' | 'tab' | 'ceiling' | 'predict' | 'focus' | 'fitTo' | 'others' | 'pathColor' | 'panelCollapsed' | 'survey'>
+type Callbacks = Omit<Props, 'draft' | 'selected' | 'tool' | 'style' | 'basemap' | 'vehicle' | 'fitRequest' | 'mode' | 'terrainTiles' | 'terrainEncoding' | 'tab' | 'ceiling' | 'predict' | 'focus' | 'fitTo' | 'others' | 'pathColor' | 'panelCollapsed' | 'survey'>
 
 /** Mission editing map (2D, and 3D with altitude / position drags): path, draggable badges, mid-leg inserts. */
 export function MissionMap(props: Props) {
@@ -264,7 +266,7 @@ export function MissionMap(props: Props) {
   }, [draft, drawing, previewing])
 
   // After the map, the badges and the handles exist: effects run in declaration order.
-  air.current = useMissionAir({ map, loaded, mode: props.mode ?? '2d', terrainTiles: props.terrainTiles ?? null, draft: shown, selected, badges, handles, ceiling: props.ceiling ?? null, vehicleHome: vehicleHomeOf(vehicle), predicted, others, color: pathColor ?? null })
+  air.current = useMissionAir({ map, loaded, mode: props.mode ?? '2d', terrainTiles: props.terrainTiles ?? null, terrainEncoding: props.terrainEncoding, draft: shown, selected, badges, handles, ceiling: props.ceiling ?? null, vehicleHome: vehicleHomeOf(vehicle), predicted, others, color: pathColor ?? null })
   const feetCb = useRef<FeetCallbacks>(null!)
   feetCb.current = {
     onPreview: (uid, multi, from, to) => setPreview(() => (d: Draft) => (multi ? moveItems(d, selectedRef.current, to.lat - from.lat, to.lon - from.lon) : moveItem(d, uid, to.lat, to.lon))),

@@ -70,7 +70,7 @@ async fn main() -> anyhow::Result<()> {
         .with_mav_port(mav_port)
         .with_map(config.map_tile_url.clone(), config.map_attribution.clone())
         .with_basemaps(config.basemaps())
-        .with_terrain(config.terrain())
+        .with_terrain(config.terrain(), config.terrain_encoding())
         .with_plugins(plugins)
         .with_whep_upstream(&config.whep_upstream)
         .with_data_dir(config.data_dir.clone())
