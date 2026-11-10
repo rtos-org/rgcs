@@ -31,7 +31,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo install cross --locked
       - run: cross build --release --target aarch64-unknown-linux-gnu -p rgcs-server
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: rgcs-server-aarch64
           path: target/aarch64-unknown-linux-gnu/release/rgcs-server
@@ -70,7 +70,7 @@ jobs:
         working-directory: apps/rgcs-server/ui
       - run: cargo build -p rgcs-server
       - run: scripts/e2e.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
