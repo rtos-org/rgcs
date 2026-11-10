@@ -204,8 +204,17 @@ describe('predicted ArduPlane / QuadPlane path (AUTO)', () => {
     const lanes = Array.from({ length: 700 }, (_, k) => item(16, { x: Math.floor(k / 2) * 40, y: k % 4 === 1 || k % 4 === 2 ? 1200 : 0 }, 100))
     const p: PlaneParams = { ...PLANE_DEFAULTS, airspeed: 18, rollLimitDeg: 35, wpRadius: 60 }
     local([item(22, null, 100), ...lanes], p)
-    const t0 = performance.now()
-    local([item(22, null, 100), ...lanes], p)
-    expect(performance.now() - t0).toBeLessThan(150)
+    // A single wall-clock sample is at the mercy of the scheduler when test
+    // files run in parallel (on a busy CI runner it measured 10x the idle
+    // time). Take the best of several runs: that is what the prediction costs
+    // when it gets the CPU, which is what this regression guard is about — an
+    // algorithmic regression makes even the best run slow.
+    let best = Number.POSITIVE_INFINITY
+    for (let i = 0; i < 5; i++) {
+      const t0 = performance.now()
+      local([item(22, null, 100), ...lanes], p)
+      best = Math.min(best, performance.now() - t0)
+    }
+    expect(best).toBeLessThan(150)
   })
 })
