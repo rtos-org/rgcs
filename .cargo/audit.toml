@@ -1,0 +1,17 @@
+# cargo-audit exceptions. Keep this list as short as possible: one entry per
+# advisory, each with the reason and the condition for removing it.
+
+[advisories]
+ignore = [
+    # RUSTSEC-2026-0459 / CVE-2026-119375: libsqlite3-sys 0.37.0 bundles
+    # SQLite < 3.54.0. The patched line is libsqlite3-sys >= 0.39.0, but
+    # sqlx-sqlite 0.9.0 (the latest sqlx) caps libsqlite3-sys at < 0.38.0,
+    # so the fixed version cannot be selected yet, neither directly nor
+    # via [patch] (patch versions must satisfy the same range).
+    # Exposure is narrow: exploitation needs the process to open a crafted
+    # database file together with a mismatched -wal sibling, and rgcs-server
+    # only opens database files inside its own data directory.
+    # Remove this ignore as soon as a sqlx release adopts
+    # libsqlite3-sys >= 0.39.0 and Cargo.lock has been updated.
+    "RUSTSEC-2026-0459",
+]
