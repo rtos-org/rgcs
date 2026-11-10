@@ -29,7 +29,7 @@ thiserror = "2.0"
 num-traits = "0.2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-mavlink = { version = "0.19.1", default-features = false, features = ["std", "tokio", "transport-udp", "transport-tcp", "transport-direct-serial", "serde", "dialect-ardupilotmega", "dialect-common", "format-generated-code", "mav2-message-extensions"] }
+mavlink = { version = "0.21.0", default-features = false, features = ["std", "tokio", "transport-udp", "transport-tcp", "transport-direct-serial", "serde", "dialect-ardupilotmega", "dialect-common", "format-generated-code", "mav2-message-extensions"] }
 axum = { version = "0.8", features = ["ws", "macros"] }
 tower-http = { version = "0.7", features = ["fs", "trace", "cors"] }
 toml = "1.1"
