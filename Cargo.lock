@@ -1399,9 +1399,9 @@ checksum = "47e1ffaa40ddd1f3ed91f717a33c8c0ee23fff369e3aa8772b9605cc1d22f4c3"
 
 [[package]]
 name = "mavlink"
-version = "0.19.1"
+version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82f4bc8f826928c899e39e30d98eafd57b1c0d992b541a007fadc68126f95303"
+checksum = "cc217df9ea6cf11b5b6a6e8bef71d367b44d3dae5cd464d0eb7947a48849977b"
 dependencies = [
  "bitflags 2.13.2",
  "mavlink-bindgen",
@@ -1414,9 +1414,9 @@ dependencies = [
 
 [[package]]
 name = "mavlink-bindgen"
-version = "0.19.1"
+version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0059289d3f5daf95a46e151c57113e95fa0ee80e8ebacb3cc5a305e7280fa020"
+checksum = "695fe1dff0efebde67fde50fb800f4703e8188e0447ab6332f48cb3066bcf982"
 dependencies = [
  "crc-any",
  "proc-macro2",
@@ -1428,11 +1428,10 @@ dependencies = [
 
 [[package]]
 name = "mavlink-core"
-version = "0.19.1"
+version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c71af820ebc18c4a21abe634bf297dc0dde578edc92e9b538c0c50c9ea4b69d"
+checksum = "ff9827ded6087bf5adbb2f4d4450c167096888c1a1619b16834fe9bfb9759d0b"
 dependencies = [
- "async-trait",
  "crc-any",
  "futures",
  "memchr",
